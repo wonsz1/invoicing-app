@@ -1,4 +1,4 @@
-###Used packages:  
+### Used packages:  
 **bcrypt** to hash user passwords  
 **express** to power our web application  
 **sqlite3** to create and maintain the database  
@@ -6,3 +6,6 @@
 **bluebird** to use Promises when writing migrations  
 **umzug** as a task runner to run our database migrations  
 **body-parser** to handle incoming form requests  
+  
+  
+  https://scotch.io/tutorials/building-a-mini-invoicing-app-with-vue-and-node-database-and-api
