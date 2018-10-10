@@ -1,4 +1,4 @@
-####Used packages:  
+###Used packages:  
 **bcrypt** to hash user passwords  
 **express** to power our web application  
 **sqlite3** to create and maintain the database  
