@@ -7,7 +7,8 @@ const HOST = process.env.HOST || '127.0.0.1';
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const validate = require('express-validation');
-let validation = require('./validation/register.js');
+let registerValidation = require('./validation/register.js');
+let invoiceValidate = require('./validation/invoice.js');
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.get('/', (req, res) => {
     res.send('Hello message');
 });
 
-app.post('/register', validate(validation), (req, res) => {
+app.post('/register', validate(registerValidation), (req, res) => {
     bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
         let db = new sqlite3.Database(process.env.DB_FILE);
         let sql = `INSERT INTO users(nip, email, company_name, password) VALUES(
@@ -44,7 +45,7 @@ app.post('/register', validate(validation), (req, res) => {
 });
 
 // error handler, required as of 0.3.0
-app.use(function(err, req, res, next){
+app.use((err, req, res, next) => {
     return res.status(400).json(err);
 });
 
@@ -80,4 +81,19 @@ app.post('/login', (req, res) => {
          message: "Wrong password"
        })
     });
+});
+
+app.post('/invoice', validate(invoiceValidate), (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `INSERT INTO invoices() VALUES()`;
+
+    db.serialize( () => {
+        db.run(sql, (err) => {
+            if(err) {
+                throw err;
+            }
+
+            let invoiceId = this.lastId;
+        });
+    })
 });
