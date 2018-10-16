@@ -10,4 +10,7 @@
   
   https://scotch.io/tutorials/building-a-mini-invoicing-app-with-vue-and-node-database-and-api
 
-terefere
+### Setup
+run `npm install`  
+create .env file with `DB_FILE=./db/InvoicingApp.db`
+install nodemon and run `nodemon` or just `node server`
