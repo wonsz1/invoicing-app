@@ -49,5 +49,35 @@ app.use(function(err, req, res, next){
 });
 
 app.post('/login', (req, res) => {
-    let db = new sqlite3.Database(process.env.DB_FILE)
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `SELECT * FROM users WHERE email='${req.body.email}'`;
+
+    db.all(sql, [], (err, rows) => {
+       if(err) {
+           throw err;
+       }
+       db.close();
+
+       if(rows.length === 0) {
+           return res.json({
+             status: false,
+             message: "Wrong email"
+           });
+       }
+
+       let user = rows[0];
+       let authenticated = bcrypt.compareSync(req.body.password, user.password);
+       if(authenticated) {
+           delete user.password;
+           return res.json({
+             status:true,
+             user: user,
+           });
+       }
+
+       return res.json({
+         status: true,
+         message: "Wrong password"
+       })
+    });
 });
