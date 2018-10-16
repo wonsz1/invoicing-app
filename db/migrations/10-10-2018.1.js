@@ -1,9 +1,10 @@
 "use strict";
 
+require('dotenv').config();
 const Promise = require("bluebird");
 const sqlite3 = require("sqlite3");
 const path = require("path");
-let db = new sqlite3.Database('./db/InvoicingApp.db');
+let db = new sqlite3.Database(process.env.DB_FILE);
 
 module.exports = {
   up: () => {

@@ -1,8 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || '127.0.0.1'
+const HOST = process.env.HOST || '127.0.0.1';
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const validate = require('express-validation');
@@ -23,7 +24,7 @@ app.get('/', (req, res) => {
 
 app.post('/register', validate(validation), (req, res) => {
     bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-        let db = new sqlite3.Database('./db/InvoicingApp.db');
+        let db = new sqlite3.Database(process.env.DB_FILE);
         let sql = `INSERT INTO users(nip, email, company_name, password) VALUES(
             '${req.body.nip}','${req.body.email}', '${req.body.company_name}', '${hash}'
         )`;
@@ -34,7 +35,7 @@ app.post('/register', validate(validation), (req, res) => {
             } else {
                 return res.json({
                     status: true,
-                    message: 'User created'
+                    message: `User ${req.body.email} created`
                 })
             }
         });
@@ -45,4 +46,8 @@ app.post('/register', validate(validation), (req, res) => {
 // error handler, required as of 0.3.0
 app.use(function(err, req, res, next){
     return res.status(400).json(err);
-});  
+});
+
+app.post('/login', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE)
+});
