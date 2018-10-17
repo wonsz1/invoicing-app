@@ -26,11 +26,9 @@ app.get('/', (req, res) => {
 app.post('/register', validate(registerValidation), (req, res) => {
     bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
         let db = new sqlite3.Database(process.env.DB_FILE);
-        let sql = `INSERT INTO users(nip, email, company_name, password) VALUES(
-            '${req.body.nip}','${req.body.email}', '${req.body.company_name}', '${hash}'
-        )`;
+        let sql = `INSERT INTO users(nip, email, company_name, password) VALUES(?,?,?,?)`;
 
-        db.run(sql, (err) => {
+        db.run(sql, [req.body.nip, req.body.email, req.body.company_name, hash], (err) => {
             if(err) {
                 throw err;
             } else {
@@ -51,9 +49,9 @@ app.use((err, req, res, next) => {
 
 app.post('/login', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT * FROM users WHERE email='${req.body.email}'`;
+    let sql = `SELECT * FROM users WHERE email = (?)`;
 
-    db.all(sql, [], (err, rows) => {
+    db.all(sql, [req.body.email], (err, rows) => {
        if(err) {
            throw err;
        }
@@ -85,15 +83,45 @@ app.post('/login', (req, res) => {
 
 app.post('/invoice', validate(invoiceValidate), (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `INSERT INTO invoices() VALUES()`;
+    let sql = `INSERT INTO invoices(name, client_id, type, sell_date, issue_date, sum_net, sum_vat, sum_gross, paid) 
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.serialize( () => {
-        db.run(sql, (err) => {
+        db.run(sql, [
+          req.body.name,
+          req.body.user_id,
+          req.body.type,
+          req.body.sell_date,
+          req.body.issue_date,
+          req.body.sum_net,
+          req.body.sum_vat,
+          req.body.sum_gross,
+          0
+        ], (err) => {
             if(err) {
                 throw err;
             }
 
-            let invoiceId = this.lastId;
+            let invoiceId = this.lastID;
+            for(let i = 0; i < req.body.txn_names.length; i++) {
+              let query = `INSERT INTO transactions(name, price_net, value_net, vat, value_gross, quantity, invoice_id) 
+              VALUES(?, ?, ?, ?, ?, ?, ?)`;
+
+              db.run(query, [
+                req.body.txn_name[i],
+                req.body.txn_price_net[i],
+                req.body.txn_value_net[i],
+                req.body.txn_vat[i],
+                req.body.txn_value_gross[i],
+                req.body.txn_quantity[i],
+                invoiceId
+              ]);
+            }
+
+            return res.json({
+              status: true,
+              message: "Invoice created"
+            })
         });
     })
 });
