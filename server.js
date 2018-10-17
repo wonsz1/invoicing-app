@@ -124,3 +124,35 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
         });
     })
 });
+
+app.get('/invoice/user/:user_id', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `SELECT * FROM invoices LEFT JOIN transactions ON invoices.id = transactions.invoice_id where client_id= (?)`;
+
+    db.all(sql, [req.params.user_id], (err, rows) => {
+        if(err) {
+            throw err;
+        }
+
+        return res.json({
+            status: true,
+            transactions: rows
+        })
+    });
+});
+
+app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `SELECT * FROM invoices LEFT JOIN transactions ON invoices.id = transactions.invoice_id where client_id= (?) and invoice_id = (?)`;
+
+    db.all(sql, [req.params.user_id, req.params.invoice_id], (err, rows) => {
+        if(err) {
+            throw err;
+        }
+
+        return res.json({
+            status: true,
+            transactions: rows
+        })
+    });
+});
