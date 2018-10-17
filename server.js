@@ -70,14 +70,14 @@ app.post('/login', (req, res) => {
            delete user.password;
            return res.json({
              status:true,
-             user: user,
+             user: user
            });
        }
 
        return res.json({
          status: true,
          message: "Wrong password"
-       })
+       });
     });
 });
 
@@ -89,7 +89,7 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
     db.serialize( () => {
         db.run(sql, [
           req.body.name,
-          req.body.user_id,
+          req.body.client_id,
           req.body.type,
           req.body.sell_date,
           req.body.issue_date,
@@ -97,13 +97,12 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
           req.body.sum_vat,
           req.body.sum_gross,
           0
-        ], (err) => {
+        ], function (err) { //it need to be function not arrow function, because of the absence of a 'this' in arrow lambdas
             if(err) {
                 throw err;
             }
 
-            let invoiceId = this.lastID;
-            for(let i = 0; i < req.body.txn_names.length; i++) {
+            for(let i = 0; i < req.body.txn_name.length; i++) {
               let query = `INSERT INTO transactions(name, price_net, value_net, vat, value_gross, quantity, invoice_id) 
               VALUES(?, ?, ?, ?, ?, ?, ?)`;
 
@@ -114,14 +113,14 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
                 req.body.txn_vat[i],
                 req.body.txn_value_gross[i],
                 req.body.txn_quantity[i],
-                invoiceId
+                this.lastID
               ]);
             }
 
             return res.json({
               status: true,
               message: "Invoice created"
-            })
+            });
         });
     })
 });

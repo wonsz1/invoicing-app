@@ -16,6 +16,7 @@
     "express": "^4.16.4",
     "express-validation": "^1.0.2",
     "joi": "^14.0.0",
+    "joi-date-extensions": "^1.2.0",
     "mongoose": "^5.3.4",
     "path": "^0.12.7",
     "simple-node-logger": "^0.93.40",
