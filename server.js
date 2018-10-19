@@ -1,17 +1,21 @@
 require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
+const cors = require("cors");
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const validate = require('express-validation');
+
 let registerValidation = require('./validation/register.js');
 let invoiceValidate = require('./validation/invoice.js');
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -137,7 +141,7 @@ app.get('/invoice/user/:user_id', (req, res) => {
         return res.json({
             status: true,
             transactions: rows
-        })
+        });
     });
 });
 
@@ -153,6 +157,6 @@ app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
         return res.json({
             status: true,
             transactions: rows
-        })
+        });
     });
 });
