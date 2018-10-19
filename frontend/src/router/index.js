@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import SignUp from '@/componenets/SignUp';
-import Dashboard from '@/componenets/Dashboard';
-Vue.use(Router)
+import SignUp from '@/components/SignUp';
+import Dashboard from '@/components/Dashboard';
+Vue.use(Router);
 
 export default new Router({
     mode: 'history',

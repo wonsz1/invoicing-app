@@ -4,7 +4,7 @@ export default {
     props: ['email', 'company_name'],
     methods: {
         setActive(option) {
-            this.$parent.$parent.inactive = option;
+            this.$parent.inactive = option;
         },
         openNav() {
             document.getElementById("leftsidenav").style.width = '20%';
