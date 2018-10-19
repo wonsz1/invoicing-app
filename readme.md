@@ -1,16 +1,19 @@
-### Used packages:  
-**bcrypt** to hash user passwords  
-**express** to power our web application  
-**sqlite3** to create and maintain the database  
-**path** to resolve file paths within our application  
-**bluebird** to use Promises when writing migrations  
-**umzug** as a task runner to run our database migrations  
-**body-parser** to handle incoming form requests  
-  
-  
-  https://scotch.io/tutorials/building-a-mini-invoicing-app-with-vue-and-node-database-and-api
+Based on:
+https://scotch.io/tutorials/building-a-mini-invoicing-app-with-vue-and-node-database-and-api
 
-### Setup
+### Setup API
 run `npm install`  
-create .env file with `DB_FILE=./db/InvoicingApp.db`
-install nodemon and run `nodemon` or just `node server`
+create .env file with `DB_FILE=./db/InvoicingApp.db`  
+serve on localhost:3000  
+`node server`  
+or install nodemon and run  
+ `nodemon`  
+   
+ 
+ ### Setup frontend
+ run `npm install`
+ 
+ serve with hot reload at localhost:8080  
+ `npm run dev`  
+ or  
+ `nodemon`
