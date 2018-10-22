@@ -2,7 +2,7 @@
 import Header from './Header';
 import axios from 'axios';
 
-const env = require('../config')
+const env = require('../config');
 
 export default {
     name: "SignUp",
@@ -28,16 +28,17 @@ export default {
         },
 
         register() {
-            let formData = new FormData();
             if(!this.validate()) {
                 alert('password don\'t match');
                 return false;
             }
-                
-            formData.append('nip', this.model.nip);
-            formData.append('email', this.model.email);
-            formData.append('company_name', this.model.company_name);
-            formData.append('password', this.model.password);
+            
+            let formData = {
+                nip: this.model.nip,
+                email: this.model.email,
+                company_name: this.model.company_name,
+                password: this.model.password
+            };
             this.loading = "Registering, please wait";
 
             axios.post(env.default.SERVER_ADDR + 'register', formData).then(res => {
@@ -54,9 +55,10 @@ export default {
         },
 
         login() {
-            let formData = new FormData();
-            formData.append('email', this.model.email);
-            formData.append('password', this.model.password);
+            let formData = {
+                email: this.model.email,
+                password: this.model.password
+            };
             this.loading = 'Signing in';
            
             axios.post(env.default.SERVER_ADDR + 'login', formData).then(res => {
