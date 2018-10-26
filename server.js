@@ -9,6 +9,7 @@ const HOST = process.env.HOST || '127.0.0.1';
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const validate = require('express-validation');
+const jwt = require('jsonwebtoken');
 
 let registerValidation = require('./validation/register.js');
 let invoiceValidate = require('./validation/invoice.js');
@@ -18,6 +19,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.set('appSecret', 'secretforapppp');
 
 app.listen(PORT, HOST, () => {
     console.log(`Server listening on http://${HOST}:${PORT}`)
@@ -30,16 +32,30 @@ app.get('/', (req, res) => {
 app.post('/register', validate(registerValidation), (req, res) => {
     bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
         let db = new sqlite3.Database(process.env.DB_FILE);
-        let sql = `INSERT INTO users(nip, email, company_name, password) VALUES(?,?,?,?)`;
+        const sql = `INSERT INTO users(nip, email, company_name, password) VALUES(?,?,?,?)`;
 
         db.run(sql, [req.body.nip, req.body.email, req.body.company_name, hash], (err) => {
             if(err) {
                 throw err;
             } else {
-                return res.json({
-                    status: true,
-                    message: `User ${req.body.email} created`
-                })
+              const user_id = this.lastID;
+              const payload = {
+                user: {
+                  nip: req.body.nip,
+                  email: req.body.email,
+                  company_name: req.body.company_name
+                }
+              };
+
+              const token = jwt.sign(payload, app.get("appSecret"), {
+                expiresInMinutes: "24h"
+              });
+
+              return res.json({
+                status: true,
+                token: token,
+                message: `User ${req.body.email} created`
+              });
             }
         });
         db.close();
@@ -51,9 +67,31 @@ app.use((err, req, res, next) => {
     return res.status(400).json(err);
 });
 
+app.use((req, res, next) => {
+  const token = req.body.token || req.query.token || req.headers["x-access-token"];
+  if(token) {
+    jwt.verify(token, app.get("appSecret"), (err, decoded) =>{
+      if(err) {
+        return res.json({
+          success: false,
+          message: "Failed to authenticate token"
+        });
+      }
+
+      req.decoded = decoded;
+      next();
+    });
+  }
+
+  return res.status(403).send({
+    success: false,
+    message: "No token provided"
+  });
+});
+
 app.post('/login', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT * FROM users WHERE email = (?)`;
+    const sql = `SELECT * FROM users WHERE email = (?)`;
 
     db.all(sql, [req.body.email], (err, rows) => {
        if(err) {
@@ -69,11 +107,16 @@ app.post('/login', (req, res) => {
        }
 
        let user = rows[0];
-       let authenticated = bcrypt.compareSync(req.body.password, user.password);
-       if(authenticated) {
+       if(bcrypt.compareSync(req.body.password, user.password)) {
            delete user.password;
+
+           const token = jwt.sign({ user: user }, app.get('appSecret'), {
+             expiresIn: "24h"
+           });
+
            return res.json({
              status:true,
+             token: token,
              user: user
            });
        }
