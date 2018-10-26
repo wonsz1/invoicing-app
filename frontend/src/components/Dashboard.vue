@@ -21,13 +21,12 @@
 </script>
 <template>
   <div class="container-fluid" style="padding: 0px;">
-    <Header v-bind:user="user">
+    <Header v-bind:user="user" />
       <template v-if="this.isactive == 'create'">
         <create-invoice/>
       </template>
       <template v-else>
         <view-invoice/>
       </template>
-    </Header>
   </div>
 </template>

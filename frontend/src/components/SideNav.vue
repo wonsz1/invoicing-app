@@ -2,8 +2,14 @@
 export default {
     name: "SideNav",
     props: ['email', 'company_name'],
+    data() {
+        return {
+            active: 'create'
+        };
+    },
     methods: {
         setActive(option) {
+            this.active = option;
             this.$parent.inactive = option;
         },
         openNav() {
@@ -28,3 +34,48 @@ export default {
         </div>
     </div>
 </template>
+<style>
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #fafafa;
+  color: #818181;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  text-align: center;
+}
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav a {
+    font-size: 18px;
+  }
+}
+.clickable {
+  cursor: pointer;
+}
+</style>

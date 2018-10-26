@@ -1,18 +1,13 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <SignUp/>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import SignUp from './components/SignUp'
 
 export default {
-  name: 'App',
-  components: {
-    SignUp
-  }
+  name: 'App'
 }
 </script>
 
@@ -23,6 +18,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
