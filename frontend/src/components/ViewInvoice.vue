@@ -21,7 +21,7 @@
                         </thead>
                         <tbody>
                             <template v-for="inv in invoices">
-                                <tr>
+                                <tr :key="inv.id">
                                     <td scope="row">{{ inv.id }}</td>
                                     <td>{{ inv.name }}</td>
                                     <td>{{ inv.sum_net }}</td>

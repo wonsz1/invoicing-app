@@ -5,97 +5,100 @@
                 <div class="col-md-12">
                     <h3>New Invoice</h3>
                     <form @submit.prevent="onSubmit">
-                        <div class="form-group">
-                            <label for="">Invoice name</label>
-                            <input type="text" class="form-control" placeholder="eg FV/1222/10/2044" v-model="invoice.name" />
-                        </div>
-                        <div class="form-group">
-                            <label for="">Price:</label> <span>{{invoice.total_price}} pln</span>
-                        </div>
-
-                        <hr/>
-                        <button type="button" class="btn btn-primary" data-toogle="modal" data-target="#transactionModal">Add position</button>
-
-                        <div class="modal fade" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="transactionModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Add</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="fom-group">
-                                            <label for="">Name</label>
-                                            <input type="text" id="txn_name_modal" class="form-control" />
-                                        </div>
-                                        <div class="fom-group">
-                                            <label for="">Quantity</label>
-                                            <input type="text" id="txn_quantity_modal" class="form-control" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="">Price net</label>
-                                            <input type="text" id="txn_price_net_modal" class="form-control" />
-                                        </div>
-                                        <div class="fom-group">
-                                            <label for="">VAT</label>
-                                            <input type="text" id="txn_vat_modal" class="form-control" />
-                                        </div>
-                                        <div class="fom-group">
-                                            <label for="">Value net</label>
-                                            <input type="text" id="txn_value_net_modal" class="form-control" />
-                                        </div>
-                                        <div class="fom-group">
-                                            <label for="">Value gross</label>
-                                            <input type="text" id="txn_value_gross_modal" class="form-control" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="#transactionModal">X</button>
-                                        <button type="button" class="btn btn-primary" data-dismiss="modal" data-target="#transactionModal" v-on:click="saveTransaction()">Save</button>
-                                    </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="">Type</label>
                                 </div>
                             </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="">Number</label>
+                                    <input type="text" class="form-control" placeholder="eg FV/1222/10/2044" v-model="invoice.name" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="">Issue Date</label>
+                                    <input type="text" class="form-control" v-model="invoice.issue_date" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="">Sell date</label>
+                                    <input type="text" class="form-control" v-model="invoice.sell_date" />
+                                </div>
+                            </div>
+                        </div>
+                    
+
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Price net</th>
+                                        <th scope="col">VAT</th>
+                                        <th scope="col">Value net</th>
+                                        <th scope="col">Value gross</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template>
+                                        <tr>
+                                            <td><input type="text" id="txn_name_modal" class="form-control" /></td>
+                                            <td><input type="text" id="txn_quantity_modal" class="form-control" value="1"  v-on:blur="calculateValues()" /></td>
+                                            <td><input type="text" id="txn_price_net_modal" class="form-control" v-on:blur="calculateValues()" /></td>
+                                            <td><input type="text" id="txn_vat_modal" class="form-control" v-on:blur="calculateValues()" /></td>
+                                            <td><input type="text" id="txn_value_net_modal" class="form-control" /></td>
+                                            <td><input type="text" id="txn_value_gross_modal" class="form-control" /></td>
+                                            <td>
+                                                <button type="button" class="btn btn-secondary" v-on:click="clearTransaction()">X</button>
+                                                <button type="button" class="btn btn-success" v-on:click="saveTransaction()">+</button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template v-for="txn in transactions">
+                                        <tr :key="txn.id">
+                                            <td>{{ txn.id }}</td>
+                                            <td>{{ txn.name }}</td>
+                                            <td>{{ txn.quantity }}</td>
+                                            <td>{{ txn.price_net }}</td>
+                                            <td>{{ txn.vat }}</td>
+                                            <td>{{ txn.value_net }}</td>
+                                            <td>{{ txn.value_gross }}</td>
+                                            <td><button type="button" class="btn btn-danger" v-on:click="deleteTransaction(txn.id)">X</button></td>
+                                        </tr>
+                                    </template>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Sum:</td>
+                                        <td>{{ invoice.sum_gross / 100 }}</td>
+                                        <td>pln</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-primary">Create invoice</button>
+                            {{ loading }}
+                            {{ status }}
                         </div>
                     </form>
                 </div>
 
-                <div class="col-md-12">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Price net</th>
-                                    <th scope="col">VAT</th>
-                                    <th scope="col">Value net</th>
-                                    <th scope="col">Value gross</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template v-for="txn in transactions">
-                                    <tr :key="txn.id">
-                                        <td>{{ txn.id }}</td>
-                                        <td>{{ txn.name }}</td>
-                                        <td>{{ txn.quantity }}</td>
-                                        <td>{{ txn.price_net }}</td>
-                                        <td>{{ txn.vat }}</td>
-                                        <td>{{ txn.value_net }}</td>
-                                        <td>{{ txn.value_gross }}</td>
-                                        <td><button type="button" class="btn btn-danger" v-on:click="deleteTransaction(txn.id)">X</button></td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                </div>
-                
-                <div class="form-group">
-                    <button class="btn btn-primary">Create invoice</button>
-                    {{ loading }}
-                    {{ status }}
+                <div class="modal fade" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="transactionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                                    
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -121,38 +124,40 @@ export default {
             transactions: [],
             nextTxnId: 1,
             loading: "",
-            status: "",
-            // invoice: {
-            //     name: "",
-            //     quantity: 0,
-            //     price_net: 0,
-            //     vat: 0,
-            //     value_net: 0,
-            //     value_gross: 0,
-            // },
+            status: ""
         }
     },
     methods: {
         saveTransaction() {
             this.transactions.push({
                 name: document.getElementById('txn_name_modal').value,
-                quantity: docuemnt.getElementById('txn_quantity_modal').value,
-                price_net: docuemnt.getElementById('txn_price_net_modal').value,
-                vat: docuemnt.getElementById('txn_vat_modal').value,
-                value_net: docuemnt.getElementById('txn_value_net_modal').value,
-                value_gross: docuemnt.getElementById('txn_value_gross_modal').value              
+                quantity: document.getElementById('txn_quantity_modal').value,
+                price_net: document.getElementById('txn_price_net_modal').value,
+                vat: document.getElementById('txn_vat_modal').value,
+                value_net: document.getElementById('txn_value_net_modal').value,
+                value_gross: document.getElementById('txn_value_gross_modal').value              
             });
 
             this.nextTxnId++;
             this.calcTotal();
 
             //clear form fields
+            this.clearTransaction();
+        },
+        calculateValues() {
+            const quantity = document.getElementById('txn_quantity_modal').value;
+            const price_net = document.getElementById('txn_price_net_modal').value;
+            const vat = document.getElementById('txn_vat_modal').value ? document.getElementById('txn_vat_modal').value : 0;
+            const value_net = document.getElementById('txn_value_net_modal').value = quantity * price_net;
+            document.getElementById('txn_value_gross_modal').value = (value_net * (1 + vat / 100)).toFixed(2);
+        },
+        clearTransaction() {
             document.getElementById('txn_name_modal').value = "";
-            docuemnt.getElementById('txn_quantity_modal').value = "";
-            docuemnt.getElementById('txn_price_net_modal').value = "";
-            docuemnt.getElementById('txn_vat_modal').value = "";
-            docuemnt.getElementById('txn_value_net_modal').value = "";
-            docuemnt.getElementById('txn_value_gross_modal').value = ""; 
+            document.getElementById('txn_quantity_modal').value = "";
+            document.getElementById('txn_price_net_modal').value = "";
+            document.getElementById('txn_vat_modal').value = "";
+            document.getElementById('txn_value_net_modal').value = "";
+            document.getElementById('txn_value_gross_modal').value = "";
         },
         deleteTransaction(id) {
             this.transactions = this.transactions.filter(el => {
@@ -162,7 +167,7 @@ export default {
             this.calcTotal();
         },
         calcTotal() {
-            let sum_net = 0, sum_vat = 0, sum_gross = 0;
+            let sum_net = 0, sum_vat = 0, sum_gross = 0, quantity = 0;
             this.transactions.forEach(element => {
                 sum_net += element.value_net * 100;
                 sum_vat += element.vat * 100;

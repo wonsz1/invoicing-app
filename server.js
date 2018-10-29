@@ -67,28 +67,6 @@ app.use((err, req, res, next) => {
     return res.status(400).json(err);
 });
 
-app.use((req, res, next) => {
-  const token = req.body.token || req.query.token || req.headers["x-access-token"];
-  if(token) {
-    jwt.verify(token, app.get("appSecret"), (err, decoded) =>{
-      if(err) {
-        return res.json({
-          success: false,
-          message: "Failed to authenticate token"
-        });
-      }
-
-      req.decoded = decoded;
-      next();
-    });
-  }
-
-  return res.status(403).send({
-    success: false,
-    message: "No token provided"
-  });
-});
-
 app.post('/login', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
     const sql = `SELECT * FROM users WHERE email = (?)`;
@@ -125,6 +103,28 @@ app.post('/login', (req, res) => {
          status: true,
          message: "Wrong password"
        });
+    });
+});
+
+app.use((req, res, next) => {
+    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+    if(token) {
+      jwt.verify(token, app.get("appSecret"), (err, decoded) =>{
+        if(err) {
+          return res.json({
+            success: false,
+            message: "Failed to authenticate token"
+          });
+        }
+        
+        req.decoded = decoded;
+        next();
+      });
+    }
+  
+    return res.status(403).send({
+      success: false,
+      message: "No token provided"
     });
 });
 
