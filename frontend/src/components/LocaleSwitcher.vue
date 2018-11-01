@@ -13,7 +13,7 @@
         </a>
 
         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-right">
-            <router-link v-for="locale in locales" :key="locale.code" :to="`/${locale.code}`" class="dropdown-item">
+            <router-link v-for="locale in locales" :key="locale.code" :to="`/${locale.code}/${pathWithoutLocale}`" class="dropdown-item">
                 <img :src="icons[locale.code]" class="country-icon" />
                 <span class="locale-name">{{ locale.name }}</span>
             </router-link>
@@ -41,6 +41,9 @@ export default {
     computed: {
         currentLocale() {
             return this.$route.params.locale
+        },
+        pathWithoutLocale() {
+            return this.$route.path.substring(4)
         }
     }
 }

@@ -1,0 +1,15 @@
+{
+    "translation": {
+        "type": "Typ",
+        "name": "Nazwa",
+        "quantity": "Ilość",
+        "price_net": "Cena netto",
+        "vat": "VAT",
+        "value_net": "Wartość netto",
+        "value_gross": "Wartość brutto",
+        "issue_date": "Data wystawienia",
+        "sell_date": "Data sprzedazy",
+        "sum": "Suma",
+        "create_invoice": "Zapisz"
+    }
+}

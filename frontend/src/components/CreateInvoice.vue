@@ -8,24 +8,24 @@
                         <div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="">Type</label>
+                                    <label for="">{{$t('type')}}</label>
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="">Number</label>
+                                    <label for="">{{$t('number')}}</label>
                                     <input type="text" class="form-control" placeholder="eg FV/1222/10/2044" v-model="invoice.name" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="">Issue Date</label>
+                                    <label for="">{{$t('issue_date')}}</label>
                                     <input type="text" class="form-control" v-model="invoice.issue_date" />
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="">Sell date</label>
+                                    <label for="">{{$t('sell_date')}}</label>
                                     <input type="text" class="form-control" v-model="invoice.sell_date" />
                                 </div>
                             </div>
@@ -36,12 +36,12 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Price net</th>
-                                        <th scope="col">VAT</th>
-                                        <th scope="col">Value net</th>
-                                        <th scope="col">Value gross</th>
+                                        <th scope="col">{{$t('name')}}</th>
+                                        <th scope="col">{{$t('quantity')}}</th>
+                                        <th scope="col">{{$t('price_net')}}</th>
+                                        <th scope="col">{{$t('vat')}}</th>
+                                        <th scope="col">{{$t('value_net')}}</th>
+                                        <th scope="col">{{$t('value_gross')}}</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
@@ -62,7 +62,7 @@
                                     </template>
                                     <template v-for="txn in transactions">
                                         <tr :key="txn.id">
-                                            <td>{{ txn.id }}</td>
+                                            <!-- <td>{{ txn.id }}</td> -->
                                             <td>{{ txn.name }}</td>
                                             <td>{{ txn.quantity }}</td>
                                             <td>{{ txn.price_net }}</td>
@@ -77,7 +77,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td>Sum:</td>
+                                        <td>{{$t('sum')}}:</td>
                                         <td>{{ invoice.sum_gross / 100 }}</td>
                                         <td>pln</td>
                                     </tr>
@@ -86,7 +86,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button class="btn btn-primary">Create invoice</button>
+                            <button class="btn btn-primary">{{$t('create_invoice')}}</button>
                             {{ loading }}
                             {{ status }}
                         </div>
@@ -107,6 +107,10 @@
 
 <script>
 import axios from 'axios';
+import Vue from 'vue'
+import { setUiLocale, t, currentLocale } from '../services/i18n'
+Vue.prototype.$t = t
+
 export default {
     name: 'CreateInvoice',
     data() {
@@ -130,6 +134,7 @@ export default {
     methods: {
         saveTransaction() {
             this.transactions.push({
+                id: this.nextTxnId,
                 name: document.getElementById('txn_name_modal').value,
                 quantity: document.getElementById('txn_quantity_modal').value,
                 price_net: document.getElementById('txn_price_net_modal').value,

@@ -1,5 +1,7 @@
 Based on:
 https://scotch.io/tutorials/building-a-mini-invoicing-app-with-vue-and-node-database-and-api
+Localization based on: 
+https://phraseapp.com/blog/posts/how-to-build-spa-vue-js-i18n/
 
 ### Setup API
 run `npm install`  

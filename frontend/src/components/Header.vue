@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-light bg-light navbar-expand-md fixed-top">
+    <nav class="navbar navbar-light bg-light navbar-expand-md">
         <template v-if="user != null">
             <SideNav v-bind:nip="user.nip" v-bind:company="user.company_name" />
         </template>

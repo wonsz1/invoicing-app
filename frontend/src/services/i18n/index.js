@@ -1,30 +1,32 @@
 import _ from 'lodash'
 import i18next from 'i18next'
+
 import { locales } from '../../config/i18n'
 
 export const setUiLocale = (locale) => {
-    if(!_.find(locales, supported => {
-        supported.code === locale
-    })) {
+    if (!_.find(locales, supported => supported.code === locale)) {
         return Promise.reject(`Locale ${locale} is not supported.`)
     }
 
     return fetch(`/static/translations/${locale}.json`)
         .then(response => response.json())
-        .then(loadResources => {
-            new Promise((res, rej) => {
+        .then(loadedResources => (
+            new Promise((resolve, reject) => {
                 i18next.init({
                     lng: locale,
                     debug: true,
-                    resources: { [locale]: loadResources},
+                    resources: { [locale]: loadedResources },
                 }, (err) => {
-                    if(err) {
+                    if (err) {
                         reject(err)
-                        retrurn
+                        return
                     }
+
+                    resolve()
                 })
             })
-        }).catch(err => Promise.reject(err))
+        ))
+        .catch(err => Promise.reject(err))
 }
 
 export const t = (key, opt) => i18next.t(key, opt)
