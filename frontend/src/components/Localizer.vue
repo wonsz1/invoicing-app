@@ -53,7 +53,6 @@ export default {
     },
     //set initial locale
     mounted() {
-        console.log(this.$route)
         this.set(this.$route.params.locale)
     },
     //Whenever the locale parameter in the current URI is different than the previous one, we re-set our current locale. 

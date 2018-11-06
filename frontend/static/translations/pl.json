@@ -10,6 +10,14 @@
         "issue_date": "Data wystawienia",
         "sell_date": "Data sprzedazy",
         "sum": "Suma",
-        "create_invoice": "Zapisz"
+        "create_invoice": "Zapisz",
+        "number": "Numer",
+        "fv": "Faktura",
+        "fv_proforma": "Faktura proforma",
+        "fv_correcting": "Faktura korygująca",
+        "client": "Klient",
+        "status": "Status",
+        "paid": "Zapłacona",
+        "unpaid": "Niezapłacona"
     }
 }

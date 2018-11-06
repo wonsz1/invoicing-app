@@ -1,14 +1,16 @@
 <template>
     <div class="container">
         <div class="tab-pane fade show active">
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>New Invoice</h3>
                     <form @submit.prevent="onSubmit">
                         <div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="">{{$t('type')}}</label>
+                                    <select class="form-control">
+                                        <option value="1">{{$t('fv')}}</option>
+                                        <option value="2">{{$t('fv_proforma')}}</option>
+                                        <option value="3">{{$t('fv_correcting')}}</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-sm-2">
@@ -30,68 +32,69 @@
                                 </div>
                             </div>
                         </div>
-                    
 
-                        <div class="col-md-12">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">{{$t('name')}}</th>
-                                        <th scope="col">{{$t('quantity')}}</th>
-                                        <th scope="col">{{$t('price_net')}}</th>
-                                        <th scope="col">{{$t('vat')}}</th>
-                                        <th scope="col">{{$t('value_net')}}</th>
-                                        <th scope="col">{{$t('value_gross')}}</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <template>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table">
+                                    <thead>
                                         <tr>
-                                            <td><input type="text" id="txn_name_modal" class="form-control" /></td>
-                                            <td><input type="text" id="txn_quantity_modal" class="form-control" value="1"  v-on:blur="calculateValues()" /></td>
-                                            <td><input type="text" id="txn_price_net_modal" class="form-control" v-on:blur="calculateValues()" /></td>
-                                            <td><input type="text" id="txn_vat_modal" class="form-control" v-on:blur="calculateValues()" /></td>
-                                            <td><input type="text" id="txn_value_net_modal" class="form-control" /></td>
-                                            <td><input type="text" id="txn_value_gross_modal" class="form-control" /></td>
-                                            <td>
-                                                <button type="button" class="btn btn-secondary" v-on:click="clearTransaction()">X</button>
-                                                <button type="button" class="btn btn-success" v-on:click="saveTransaction()">+</button>
-                                            </td>
+                                            <th scope="col">{{$t('name')}}</th>
+                                            <th scope="col">{{$t('quantity')}}</th>
+                                            <th scope="col">{{$t('price_net')}}</th>
+                                            <th scope="col">{{$t('vat')}}</th>
+                                            <th scope="col">{{$t('value_net')}}</th>
+                                            <th scope="col">{{$t('value_gross')}}</th>
+                                            <th scope="col"></th>
                                         </tr>
-                                    </template>
-                                    <template v-for="txn in transactions">
-                                        <tr :key="txn.id">
-                                            <!-- <td>{{ txn.id }}</td> -->
-                                            <td>{{ txn.name }}</td>
-                                            <td>{{ txn.quantity }}</td>
-                                            <td>{{ txn.price_net }}</td>
-                                            <td>{{ txn.vat }}</td>
-                                            <td>{{ txn.value_net }}</td>
-                                            <td>{{ txn.value_gross }}</td>
-                                            <td><button type="button" class="btn btn-danger" v-on:click="deleteTransaction(txn.id)">X</button></td>
+                                    </thead>
+                                    <tbody>
+                                        <template>
+                                            <tr>
+                                                <td><input type="text" id="txn_name_modal" class="form-control" /></td>
+                                                <td><input type="text" id="txn_quantity_modal" class="form-control" value="1"  v-on:blur="calculateValues()" /></td>
+                                                <td><input type="text" id="txn_price_net_modal" class="form-control" v-on:blur="calculateValues()" /></td>
+                                                <td><input type="text" id="txn_vat_modal" class="form-control" v-on:blur="calculateValues()" /></td>
+                                                <td><input type="text" id="txn_value_net_modal" class="form-control" /></td>
+                                                <td><input type="text" id="txn_value_gross_modal" class="form-control" /></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-secondary" v-on:click="clearTransaction()">X</button>
+                                                    <button type="button" class="btn btn-success" v-on:click="saveTransaction()">+</button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                        <template v-for="txn in transactions">
+                                            <tr :key="txn.id">
+                                                <!-- <td>{{ txn.id }}</td> -->
+                                                <td>{{ txn.name }}</td>
+                                                <td>{{ txn.quantity }}</td>
+                                                <td>{{ txn.price_net }}</td>
+                                                <td>{{ txn.vat }}</td>
+                                                <td>{{ txn.value_net }}</td>
+                                                <td>{{ txn.value_gross }}</td>
+                                                <td><button type="button" class="btn btn-danger" v-on:click="deleteTransaction(txn.id)">X</button></td>
+                                            </tr>
+                                        </template>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{$t('sum')}}:</td>
+                                            <td>{{ invoice.sum_gross / 100 }}</td>
+                                            <td>pln</td>
                                         </tr>
-                                    </template>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>{{$t('sum')}}:</td>
-                                        <td>{{ invoice.sum_gross / 100 }}</td>
-                                        <td>pln</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                    </tbody>
+                                </table>
 
-                        <div class="form-group">
-                            <button class="btn btn-primary">{{$t('create_invoice')}}</button>
-                            {{ loading }}
-                            {{ status }}
+                                <div class="form-group">
+                                    <button class="btn btn-primary ">{{$t('create_invoice')}}</button>
+                                    {{ loading }}
+                                    {{ status }}
+                                </div>
+                            </div>
                         </div>
                     </form>
-                </div>
+               
 
                 <div class="modal fade" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="transactionModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -100,7 +103,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </template>
@@ -158,7 +160,7 @@ export default {
         },
         clearTransaction() {
             document.getElementById('txn_name_modal').value = "";
-            document.getElementById('txn_quantity_modal').value = "";
+            document.getElementById('txn_quantity_modal').value = "1";
             document.getElementById('txn_price_net_modal').value = "";
             document.getElementById('txn_vat_modal').value = "";
             document.getElementById('txn_value_net_modal').value = "";

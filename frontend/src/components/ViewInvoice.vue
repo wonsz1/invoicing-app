@@ -8,14 +8,14 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Value net</th>
-                                <th scope="col">Value gross</th>
-                                <th scope="col">Client</th>
-                                <th scope="col">Sell date</th>
-                                <th scope="col">Issue date</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Status</th>
+                                <th scope="col">{{$t('name')}}</th>
+                                <th scope="col">{{$t('value_net')}}</th>
+                                <th scope="col">{{$t('value_gross')}}</th>
+                                <th scope="col">{{$t('client')}}</th>
+                                <th scope="col">{{$t('sell_date')}}</th>
+                                <th scope="col">{{$t('issue_date')}}</th>
+                                <th scope="col">{{$t('type')}}</th>
+                                <th scope="col">{{$t('status')}}</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -31,9 +31,9 @@
                                     <td>{{ inv.issue_date }}</td>
                                     <td>{{ inv.name }}</td>
                                     <td>{{ inv.type }}</td>
-                                    <td v-if="inv.paid == 0">Unpaid</td>
-                                    <td v-else>Paid</td>
-                                    <td><a href="#" class="btn btn-success">Show</a></td>
+                                    <td v-if="inv.paid == 0">{{$t('unpaid')}}</td>
+                                    <td v-else>{{$t('paid')}}</td>
+                                    <td><a href="#" class="btn btn-success">{{$t('show')}}</a></td>
                                 </tr>
                             </template>
                         </tbody>
@@ -46,6 +46,8 @@
 
 <script>
     import axios from 'axios';
+    const env = require('../config');
+
     export default {
       name: 'ViewInvoice',
       data() {

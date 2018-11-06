@@ -9,8 +9,9 @@ export default {
     },
     methods: {
         setActive(option) {
+            console.log(option);
             this.active = option;
-            this.$parent.inactive = option;
+            this.$parent.$parent.isactive = option;
         },
         openNav() {
             document.getElementById("leftsidenav").style.width = '20%';
