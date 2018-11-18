@@ -1,8 +1,7 @@
 <script>
 import Header from './Header';
 import axios from 'axios';
-
-const env = require('../config');
+import store from '../services/store'
 
 export default {
     name: "SignUp",
@@ -33,25 +32,20 @@ export default {
                 return false;
             }
             
+            this.loading = "Registering, please wait";
             let formData = {
                 nip: this.model.nip,
                 email: this.model.email,
                 company_name: this.model.company_name,
                 password: this.model.password
             };
-            this.loading = "Registering, please wait";
 
-            axios.post(env.default.SERVER_ADDR + 'register', formData).then(res => {
+            store.dispatch('register', formData)
+            .then(() => {
                 this.loading = '';
-                if(res.data.status === true) {
-                    this.$router.push({
-                        name: 'Dashboard',
-                        params: { user: res.data.user }
-                    });
-                } else {
-                    this.status = res.data.message;
-                }
-            });
+                this.$router.push({ name: 'Dashboard' });
+            })
+            .catch(err => this.status = err);
         },
 
         login() {
@@ -60,18 +54,18 @@ export default {
                 password: this.model.password
             };
             this.loading = 'Signing in';
-           
-            axios.post(env.default.SERVER_ADDR + 'login', formData).then(res => {
+
+            store.dispatch('login', formData)
+            .then(() => {
                 this.loading = '';
-                if(res.data.status === true) {
-                    this.$router.push({
-                        name: 'Dashboard',
-                        params: { user: res.data.user }
-                    });
-                } else {
-                    this.status = res.data.message;
-                }
-            });
+                this.$router.push('dashboard');
+            })
+            .catch(err => this.status = err);
+        },
+
+        logout() {
+            this.$sotre.dispatch('logout')
+            .then(() => this.$route.push({ name: 'SignUp'}))
         }
     }
 }
