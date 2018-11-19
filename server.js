@@ -107,7 +107,11 @@ app.post('/login', (req, res) => {
 });
 
 app.use((req, res, next) => {
-    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+    const token = (req) => {
+        if(req.body.token) return req.body.token;
+        if(req.query.token) return req.body.token;
+        if(req.headers.authorization) return req.headers.authorization;
+    }
     if(token) {
       jwt.verify(token, app.get("appSecret"), (err, decoded) =>{
         if(err) {

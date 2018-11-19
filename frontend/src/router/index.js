@@ -3,9 +3,11 @@ import Router from 'vue-router'
 import SignUp from '@/components/SignUp'
 import Dashboard from '@/components/Dashboard'
 import { defaultLocale } from '../config/i18n'
+import store from '../services/store';
 Vue.use(Router)
 
-export default new Router({
+
+let router = new Router({
     mode: 'history',
     routes: [
         {
@@ -32,3 +34,17 @@ export default new Router({
         }
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    if(to.matched.some(record => record.meta.requiresAuth)) {
+        if(store.getters.isLoggedIn) {
+            next()
+            return
+        }
+        next('/login')
+    } else {
+        next()
+    }
+})
+
+export default router

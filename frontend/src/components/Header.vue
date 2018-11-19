@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-light bg-light navbar-expand-md">
-        <template v-if="user != null">
-            <SideNav v-bind:nip="user.nip" v-bind:company="user.company_name" />
+        <template>
+            <SideNav/>
         </template>
         
         <span class="navbar-brand mb-0 h1 ml-auto">
@@ -20,7 +20,6 @@ import LocaleSwitcher from './LocaleSwitcher'
 
 export default {
     name: "Header",
-    props: ['user'],
     components: {
         SideNav, LocaleSwitcher
     },

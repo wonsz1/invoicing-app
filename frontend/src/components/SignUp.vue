@@ -58,7 +58,7 @@ export default {
             store.dispatch('login', formData)
             .then(() => {
                 this.loading = '';
-                this.$router.push('dashboard');
+                this.$router.push({ name: 'Dashboard' });
             })
             .catch(err => this.status = err);
         },

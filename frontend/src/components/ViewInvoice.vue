@@ -46,6 +46,7 @@
 
 <script>
     import axios from 'axios';
+    import store from '../services/store';
     const env = require('../config');
 
     export default {
@@ -53,10 +54,11 @@
       data() {
         return {
           invoices: [],
-          user: this.$route.params.user
+          user: store.getters.user
         };
       },
       mounted() {
+        axios.defaults.headers.common['Authorization'] = store.getters.token;
         axios.get(env.default.SERVER_ADDR + `invoice/user/${this.user.id}`).then(res => {
           if(res.data.status === true) {
             this.invoices = res.data.invoices;

@@ -1,10 +1,15 @@
 <script>
+import store from '../services/store';
+
+console.log(store.getters.token);
+console.log(store.getters.user.company_name);
+
 export default {
     name: "SideNav",
-    props: ['email', 'company_name'],
     data() {
         return {
-            active: 'create'
+            active: 'create',
+            user: store.getters.user
         };
     },
     methods: {
@@ -18,6 +23,17 @@ export default {
         },
         closeNav() {
             document.getElementById('leftsidenav').style.width = '0%';
+        },
+        logout() {
+            store.dispatch('logout');
+        },
+        login() {
+            store.dispatch('login');
+        }
+    },
+    computed: {
+        isLoggedIn() {
+            return store.getters.isLoggedIn
         }
     }
 }
@@ -28,10 +44,12 @@ export default {
         <span style="font-size:30px; cursor:pointer" v-on:click="openNav">&#9776;</span>
         <div id="leftsidenav" class="sidenav">
             <p style="cursor:pointer" v-on:click="closeNav">Close Nav</p>
-            <p>Company: {{ company_name }}</p>
-            <h3>User: {{ email }}</h3>
+            <p v-if="isLoggedIn">Company: {{ user.company_name }}</p>
+            <p v-if="isLoggedIn">User: {{ user.email }}</p>
             <p class="clickable" v-on:click="setActive('create')">Create invoice</p>
             <p class="clickable" v-on:click="setActive('view')">View invoices</p>
+            <p class="clickable" v-if="isLoggedIn" v-on:click="logout">Logout</p>
+            <a href="/" v-if="!isLoggedIn" >Login</a>
         </div>
     </div>
 </template>
