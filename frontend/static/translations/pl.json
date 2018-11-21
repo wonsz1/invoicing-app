@@ -18,6 +18,7 @@
         "client": "Klient",
         "status": "Status",
         "paid": "Zapłacona",
-        "unpaid": "Niezapłacona"
+        "unpaid": "Niezapłacona",
+        "show": "Zobacz"
     }
 }

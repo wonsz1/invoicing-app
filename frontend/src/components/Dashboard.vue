@@ -14,14 +14,13 @@
       return {
         isactive: 'create',
         title: 'Invoicing App',
-        user: (this.$route.params.user) ? this.$route.params.user : null
       }
     }
   };
 </script>
 <template>
   <div class="container-fluid" style="padding: 0px;">
-    <Header v-bind:user="user" />
+    <Header/>
       <template v-if="this.isactive == 'create'">
         <create-invoice/>
       </template>

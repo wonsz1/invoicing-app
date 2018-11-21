@@ -34,16 +34,13 @@ export default new Vuex.Store({
     actions: {
         login({commit}, formData) {
             return new Promise((resolve, reject) => {
-                console.log('8888');
-                console.log(env.default.SERVER_ADDR);
                 commit('auth_request');
-                //axios.post(env.default.SERVER_ADDR + 'login', formData)
                 axios({url: env.default.SERVER_ADDR + 'login', data: formData, method: 'POST'})
                 .then(res => {
                     const token = res.data.token;
                     const user = res.data.user;
                     localStorage.setItem('token', token);
-                    localStorage.setItem('user', user);
+                    localStorage.setItem('user',  JSON.stringify(user));
                     axios.defaults.headers.common['Authorization'] = token;
                     commit('auth_success', { token, user });
 
@@ -92,6 +89,6 @@ export default new Vuex.Store({
         isLoggedIn: state => !!state.token,
         authStatus: state => state.status,
         token: state => state.token,
-        user: state => state.user,
+        user: state => JSON.parse(state.user),
     }
 })
