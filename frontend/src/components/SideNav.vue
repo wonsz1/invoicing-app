@@ -1,9 +1,6 @@
 <script>
 import store from '../services/store';
 
-console.log(store.getters.token);
-console.log(store.getters.user.company_name);
-
 export default {
     name: "SideNav",
     data() {
@@ -14,7 +11,6 @@ export default {
     },
     methods: {
         setActive(option) {
-            console.log(option);
             this.active = option;
             this.$parent.$parent.isactive = option;
         },

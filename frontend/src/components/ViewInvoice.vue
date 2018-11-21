@@ -14,6 +14,7 @@
                                 <th scope="col">{{$t('client')}}</th>
                                 <th scope="col">{{$t('sell_date')}}</th>
                                 <th scope="col">{{$t('issue_date')}}</th>
+                                <th scope="col">{{$t('name')}}</th>
                                 <th scope="col">{{$t('type')}}</th>
                                 <th scope="col">{{$t('status')}}</th>
                                 <th scope="col"></th>
@@ -59,7 +60,7 @@
       },
       mounted() {
         axios.defaults.headers.common['Authorization'] = store.getters.token;
-        axios.get(env.default.SERVER_ADDR + `invoice/user/${this.user.id}`).then(res => {
+        axios.get(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.id}`).then(res => {
           if(res.data.status === true) {
             this.invoices = res.data.invoices;
           }

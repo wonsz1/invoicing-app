@@ -107,29 +107,26 @@ app.post('/login', (req, res) => {
 });
 
 app.use((req, res, next) => {
-    const token = (req) => {
-        if(req.body.token) return req.body.token;
-        if(req.query.token) return req.body.token;
-        if(req.headers.authorization) return req.headers.authorization;
-    }
+    let token = req.body.token || req.body.token || req.headers.authorization;
+    
     if(token) {
-      jwt.verify(token, app.get("appSecret"), (err, decoded) =>{
+      jwt.verify(token, app.get("appSecret"), (err, decoded) => {
         if(err) {
           return res.json({
             success: false,
             message: "Failed to authenticate token"
           });
         }
-        
+
         req.decoded = decoded;
         next();
       });
+    } else {
+        return res.status(403).send({
+            success: false,
+            message: "No token provided"
+        });
     }
-  
-    return res.status(403).send({
-      success: false,
-      message: "No token provided"
-    });
 });
 
 app.post('/invoice', validate(invoiceValidate), (req, res) => {
@@ -187,7 +184,7 @@ app.get('/invoice/user/:user_id', (req, res) => {
 
         return res.json({
             status: true,
-            transactions: rows
+            invoices: rows
         });
     });
 });
@@ -203,7 +200,7 @@ app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
 
         return res.json({
             status: true,
-            transactions: rows
+            invoices: rows
         });
     });
 });
