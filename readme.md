@@ -18,4 +18,5 @@ or install nodemon and run
  serve with hot reload at localhost:8080  
  `npm run dev`  
  or  
- `nodemon`
+ `nodemon`  
+ test
