@@ -25,11 +25,11 @@
                                 <tr :key="inv.id">
                                     <td scope="row">{{ inv.id }}</td>
                                     <td>{{ inv.name }}</td>
-                                    <td>{{ inv.sum_net }}</td>
-                                    <td>{{ inv.sum_gross }}</td>
-                                    <td>{{ inv.client_id }}</td>
-                                    <td>{{ inv.sell_date }}</td>
-                                    <td>{{ inv.issue_date }}</td>
+                                    <td>{{ inv.sum_net / 100 }}zł</td>
+                                    <td>{{ inv.sum_gross / 100 }}zł</td>
+                                    <td>{{ inv.buyer_id }}</td>
+                                    <td>{{ new Date(inv.sell_date).toISOString().split("T")[0] }}</td>
+                                    <td>{{ new Date(inv.issue_date).toISOString().split("T")[0] }}</td>
                                     <td>{{ inv.name }}</td>
                                     <td>{{ inv.type }}</td>
                                     <td v-if="inv.paid == 0">{{$t('unpaid')}}</td>
@@ -61,9 +61,12 @@
       mounted() {
         axios.defaults.headers.common['Authorization'] = store.getters.token;
         axios.get(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.id}`).then(res => {
-          if(res.data.status === true) {
-            this.invoices = res.data.invoices;
-          }
+          this.invoices = res.data.invoices;
+        }).catch(err => {
+            console.log(err);
+            if(err.response.status == 401) {
+                this.$router.push({ name: 'SignUp' })
+            }
         })
       }
     }

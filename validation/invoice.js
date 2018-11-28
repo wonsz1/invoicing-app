@@ -5,7 +5,8 @@ const Joi = BaseJoi.extend(Extension);
 module.exports = {
     body: {
       name: Joi.string().required(),
-      client_id: Joi.number().required(),
+      buyer_id: Joi.number().required(),
+      seller_id: Joi.number().required(),
       type: Joi.number().required(),
       sell_date: Joi.date().format('YYYY-MM-DD').required(),
       issue_date: Joi.date().format('YYYY-MM-DD').required(),
