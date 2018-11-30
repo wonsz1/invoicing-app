@@ -89,7 +89,10 @@
                                 <div class="form-group">
                                     <button class="btn btn-primary ">{{$t('create_invoice')}}</button>
                                     {{ loading }}
-                                    {{ status }}
+                                    <p></p>
+                                    <div v-if="status" class="alert alert-primary" role="alert">
+                                        {{ status }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -110,6 +113,8 @@
 <script>
 import axios from 'axios';
 import Vue from 'vue'
+import store from '../services/store';
+const env = require('../config');
 import { setUiLocale, t, currentLocale } from '../services/i18n'
 Vue.prototype.$t = t
 
@@ -186,7 +191,7 @@ export default {
             this.invoice.sum_gross = sum_gross;
         },
         onSubmit() {
-            let txn_names = [];
+            let txn_name = [];
             let txn_quantity = [];
             let txn_price_net = [];
             let txn_vat = [];
@@ -194,7 +199,7 @@ export default {
             let txn_value_gross = [];
 
             this.transactions.forEach(element => {
-                txn_names.push(element.name);
+                txn_name.push(element.name);
                 txn_quantity.push(element.quantity);
                 txn_price_net.push(element.price_net);
                 txn_vat.push(element.vat);
@@ -203,7 +208,8 @@ export default {
             });
 
             let formData = {
-                client_id: this.$route.params.user.id,
+                seller_id: store.getters.user.id,
+                buyer_id: 8,
                 name: this.invoice.name,
                 type: this.invoice.type,
                 sell_date: this.invoice.sell_date,
@@ -213,7 +219,7 @@ export default {
                 sum_gross: this.invoice.sum_gross,
                 paid: this.invoice.paid,
                 //transactions: transactions,
-                txn_names: txn_names,
+                txn_name: txn_name,
                 txn_quantity: txn_quantity,
                 txn_price_net: txn_price_net,
                 txn_vat: txn_vat,
@@ -221,6 +227,7 @@ export default {
                 txn_value_gross: txn_value_gross
             }; 
 
+            axios.defaults.headers.common['Authorization'] = store.getters.token;
             axios.post(env.default.SERVER_ADDR + 'invoice', formData).then(res => {
                 this.loading = "";
                 this.status = res.data.message;

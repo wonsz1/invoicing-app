@@ -112,7 +112,7 @@ app.use((req, res, next) => {
     if(token) {
       jwt.verify(token, app.get("appSecret"), (err, decoded) => {
         if(err) {
-          return res.json({
+          return res.status(401).send({
             success: false,
             message: "Failed to authenticate token"
           });
@@ -122,7 +122,7 @@ app.use((req, res, next) => {
         next();
       });
     } else {
-        return res.status(403).send({
+        return res.status(401).send({
             success: false,
             message: "No token provided"
         });
@@ -131,13 +131,14 @@ app.use((req, res, next) => {
 
 app.post('/invoice', validate(invoiceValidate), (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `INSERT INTO invoices(name, client_id, type, sell_date, issue_date, sum_net, sum_vat, sum_gross, paid) 
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    let sql = `INSERT INTO invoices(name, buyer_id, seller_id, type, sell_date, issue_date, sum_net, sum_vat, sum_gross, paid) 
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.serialize( () => {
         db.run(sql, [
           req.body.name,
-          req.body.client_id,
+          req.body.buyer_id,
+          req.body.seller_id,
           req.body.type,
           req.body.sell_date,
           req.body.issue_date,
@@ -175,7 +176,7 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
 
 app.get('/invoice/user/:user_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT * FROM invoices LEFT JOIN transactions ON invoices.id = transactions.invoice_id where client_id= (?)`;
+    let sql = `SELECT * FROM invoices LEFT JOIN transactions ON invoices.id = transactions.invoice_id where seller_id= (?)`;
 
     db.all(sql, [req.params.user_id], (err, rows) => {
         if(err) {
@@ -191,7 +192,7 @@ app.get('/invoice/user/:user_id', (req, res) => {
 
 app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT * FROM invoices LEFT JOIN transactions ON invoices.id = transactions.invoice_id where client_id= (?) and invoice_id = (?)`;
+    let sql = `SELECT * FROM invoices LEFT JOIN transactions ON invoices.id = transactions.invoice_id where seller_id= (?) and invoice_id = (?)`;
 
     db.all(sql, [req.params.user_id, req.params.invoice_id], (err, rows) => {
         if(err) {

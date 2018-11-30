@@ -25,7 +25,8 @@ module.exports = {
         db.run(`CREATE TABLE invoices(
                 id INTEGER PRIMARY KEY,
                 name TEXT,
-                client_id INTEGER,
+                buyer_id INTEGER,
+                seller_id INTEGER,
                 type INTEGER,
                 sell_date DATE,
                 issue_date DATE,
@@ -33,7 +34,8 @@ module.exports = {
                 sum_vat TEXT,
                 sum_gross INTEGER,
                 paid NUMERIC,
-                FOREIGN KEY(client_id) REFERENCES users(id)
+                FOREIGN KEY(buyer_id) REFERENCES users(id)
+                FOREIGN KEY(seller_id) REFERENCES users(id)
                )`);
 
         db.run(`CREATE TABLE transactions(
