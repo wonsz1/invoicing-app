@@ -1,14 +1,14 @@
 <script>
   import Header from './Header';
   import CreateInvoice from './CreateInvoice';
-  import ViewInvoice from './ViewInvoice';
+  import InvoiceList from './InvoiceList';
 
   export default {
     name: "Dashboard",
     components: {
       Header,
       CreateInvoice,
-      ViewInvoice
+      InvoiceList
     },
     data() {
       return {
@@ -24,8 +24,8 @@
       <template v-if="this.isactive == 'create'">
         <create-invoice/>
       </template>
-      <template v-else>
-        <view-invoice/>
+      <template v-if="this.isactive == 'list'">
+        <invoice-list/>
       </template>
   </div>
 </template>

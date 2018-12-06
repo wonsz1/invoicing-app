@@ -16,9 +16,11 @@ export default {
         },
         openNav() {
             document.getElementById("leftsidenav").style.width = '20%';
+            document.getElementById("rightsidenav").style.width = '100%';
         },
         closeNav() {
             document.getElementById('leftsidenav').style.width = '0%';
+            document.getElementById("rightsidenav").style.width = '0%';
         },
         logout() {
             store.dispatch('logout');
@@ -43,18 +45,27 @@ export default {
             <p v-if="isLoggedIn">Company: {{ user.company_name }}</p>
             <p v-if="isLoggedIn">User: {{ user.email }}</p>
             <p class="clickable" v-on:click="setActive('create')">Create invoice</p>
-            <p class="clickable" v-on:click="setActive('view')">View invoices</p>
+            <p class="clickable" v-on:click="setActive('list')">View invoices</p>
             <p class="clickable" v-if="isLoggedIn" v-on:click="logout">Logout</p>
             <a href="/" v-if="!isLoggedIn" >Login</a>
         </div>
+        <div id="rightsidenav" class="sidenavoverlay" v-on:click="closeNav"></div>
     </div>
 </template>
 <style>
+.sidenavoverlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+}
 .sidenav {
   height: 100%;
   width: 0;
   position: fixed;
-  z-index: 1;
+  z-index: 10;
   top: 0;
   left: 0;
   background-color: #fafafa;

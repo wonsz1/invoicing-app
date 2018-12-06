@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import SignUp from '@/components/SignUp'
 import Dashboard from '@/components/Dashboard'
+import ViewInvoice from '@/components/ViewInvoice'
 import { defaultLocale } from '../config/i18n'
 import store from '../services/store';
 Vue.use(Router)
@@ -29,6 +30,11 @@ let router = new Router({
                     path: 'dashboard',
                     name: 'Dashboard',
                     component: Dashboard
+                },
+                {
+                    path: 'invoice/:id',
+                    name: 'Invoice',
+                    component: ViewInvoice,
                 }
             ]
         }

@@ -176,7 +176,7 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
 
 app.get('/invoice/user/:user_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT * FROM invoices LEFT JOIN transactions ON invoices.id = transactions.invoice_id where seller_id= (?)`;
+    let sql = `SELECT * FROM invoices where seller_id= (?)`;
 
     db.all(sql, [req.params.user_id], (err, rows) => {
         if(err) {
@@ -192,7 +192,7 @@ app.get('/invoice/user/:user_id', (req, res) => {
 
 app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT * FROM invoices LEFT JOIN transactions ON invoices.id = transactions.invoice_id where seller_id= (?) and invoice_id = (?)`;
+    let sql = `SELECT * FROM invoices where seller_id= (?) and invoices.id = (?)`;
 
     db.all(sql, [req.params.user_id, req.params.invoice_id], (err, rows) => {
         if(err) {
@@ -201,7 +201,23 @@ app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
 
         return res.json({
             status: true,
-            invoices: rows
+            invoice: rows[0]
+        });
+    });
+});
+
+app.get('/invoice/transactions/:invoice_id', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `SELECT * FROM transactions where transactions.invoice_id = (?)`;
+
+    db.all(sql, [req.params.invoice_id], (err, rows) => {
+        if(err) {
+            throw err;
+        }
+
+        return res.json({
+            status: true,
+            transactions: rows
         });
     });
 });
