@@ -3,7 +3,7 @@
         <div class="tab-pane fade show active">
             <div class="row">
                 <div class="col-md-12">
-                    <h3>{{$t('invoice_list')}}</h3>
+                    <h3>{{$t('invoices')}}</h3>
                     <table class="table">
                         <thead>
                             <tr>

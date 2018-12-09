@@ -19,6 +19,15 @@
         "status": "Status",
         "paid": "Zapłacona",
         "unpaid": "Niezapłacona",
-        "show": "Zobacz"
+        "show": "Zobacz",
+        "invoice_name": "Faktura numer",
+        "create_inv": "Dodaj fakturę",
+        "list_inv": "Twoje faktury",
+        "invoices": "Faktury",
+        "logout": "Wyloguj",
+        "login": "Zaloguj",
+        "company": "Firma",
+        "buyer": "Nabywca",
+        "seller": "Sprzedawca"
     }
 }

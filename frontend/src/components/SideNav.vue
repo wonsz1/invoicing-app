@@ -42,12 +42,12 @@ export default {
         <span style="font-size:30px; cursor:pointer" v-on:click="openNav">&#9776;</span>
         <div id="leftsidenav" class="sidenav">
             <p style="cursor:pointer" v-on:click="closeNav">Close Nav</p>
-            <p v-if="isLoggedIn">Company: {{ user.company_name }}</p>
-            <p v-if="isLoggedIn">User: {{ user.email }}</p>
-            <p class="clickable" v-on:click="setActive('create')">Create invoice</p>
-            <p class="clickable" v-on:click="setActive('list')">View invoices</p>
-            <p class="clickable" v-if="isLoggedIn" v-on:click="logout">Logout</p>
-            <a href="/" v-if="!isLoggedIn" >Login</a>
+            <p v-if="isLoggedIn">{{$t('company')}}: {{ user.company_name }}</p>
+            <p v-if="isLoggedIn">{{$t('user')}}: {{ user.email }}</p>
+            <p class="clickable" v-on:click="setActive('create')">{{$t('create_inv')}}</p>
+            <p class="clickable" v-on:click="setActive('list')">{{$t('list_inv')}}</p>
+            <p class="clickable" v-if="isLoggedIn" v-on:click="logout">{{$t('logout')}}</p>
+            <a href="/" v-if="!isLoggedIn" >{{$t('login')}}</a>
         </div>
         <div id="rightsidenav" class="sidenavoverlay" v-on:click="closeNav"></div>
     </div>

@@ -5,25 +5,35 @@
         <div class="tab-pane fade show active">
             <div class="row">
                 <div class="col-md-12">
-                    <h3>{{$t('invoice_detail')}}</h3>
+                    <h3></h3>
                     <div class="invoice-preview inv col-md-12">
-                        <div class="inv-header"></div>
+                        <div class="inv-header">
+                            <p><b>{{$t('invoice_name')}}</b> {{ invoice.name }}</p>
+                            <br/>
+                            <p><b>{{$t('issue_date')}}</b> {{ new Date(invoice.issue_date).toLocaleDateString("pl-PL") }}</p>
+                            <p><b>{{$t('sell_date')}}</b> {{ new Date(invoice.sell_date).toLocaleDateString("pl-PL") }}</p>
+                        </div>
+                        <hr/>
                         <div class="inv-seller-buyer">
                             <table class="clean split_half">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <span class="seller">Sprzedawca</span>
-                                        </th>
-                                        <th>
-                                            <span class="buyer">Nabywca</span>
-                                        </th>
+                                        <th>{{$t('seller')}}</th>
+                                        <th>{{$t('buyer')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td></td>
-                                        <td id="buyer"></td>
+                                        <td id="buyer">{{ buyer.company_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td id="buyer">{{ buyer.address }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td id="buyer">{{ buyer.nip }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -36,8 +46,8 @@
                                         <th scope="col">{{$t('name')}}</th>
                                         <th scope="col">{{$t('quantity')}}</th>
                                         <th scope="col">{{$t('value_net')}}</th>
-                                        <th scope="col">{{$t('value_gross')}}</th>
                                         <th scope="col">{{$t('vat')}}</th>
+                                        <th scope="col">{{$t('value_gross')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -47,12 +57,16 @@
                                             <td>{{ trans.name }}</td>
                                             <td>{{ trans.quantity }}</td>
                                             <td>{{ trans.price_net }}zł</td>
+                                            <td>{{ trans.vat }}zł</td>
                                             <td>{{ trans.value_gross }}zł</td>
-                                            <td>{{ trans.vat }}</td>
                                         </tr>
                                     </template>
                                 </tbody>
                             </table>
+
+                            <p class="right"><b>{{$t('value_net')}}</b> {{ invoice.sum_net / 100 }}zł</p>
+                            <p class="right"><b>{{$t('vat')}}</b> {{ invoice.sum_vat / 100 }}zł</p>
+                            <p class="right"><b>{{$t('value_gross')}}</b> {{ invoice.sum_gross / 100 }}zł</p>
                         </div>
                     </div>
                 </div>
@@ -77,6 +91,7 @@
         return {
           invoice: [],
           transactions: [],
+          buyer: [],
           user: store.getters.user
         };
       },
@@ -86,16 +101,19 @@
           },
           getInvoiceTransactions() {
             return  axios.get(env.default.SERVER_ADDR + `invoice/transactions/${this.$route.params.id}`)
+          },
+          getSeller() {
+            return  axios.get(env.default.SERVER_ADDR + `invoice/transactions/${this.$route.params.id}`)
           }
       },
       mounted() {
         var self = this;
         axios.defaults.headers.common['Authorization'] = store.getters.token;
         axios.all([this.getInvoice(), this.getInvoiceTransactions()]).then(axios.spread(function(inv, trans) {
+          self.buyer = inv.data.buyer;
+          console.log(inv.data.buyer);
           self.invoice = inv.data.invoice;
           self.transactions = trans.data.transactions;
-          console.log(inv.data.invoice);
-          console.log(trans.data);
         })).catch(err => {
             console.log(err);
             if(err.response.status == 401) {
@@ -107,8 +125,42 @@
 </script>
 <style>
     .invoice-preview {
+        margin: 0 auto;
         box-shadow: 1px 3px 5px 0px rgba(0,0,0,0.75);
         font-size: 110%;
         border: 1px solid #ddd;
+        text-align: left;
+        padding: 20px;
+        font-family: helvetica,"lucida grande","lucida sans unicode";   
+        font-size: 14px;
+        max-width: 800px;
+    }
+    .invoice-preview table {
+        text-align: right;
+    }
+
+    p {
+        margin-bottom: 0.5em;
+        line-height: 1.4em;
+    }
+    .right {
+        text-align: right;
+    }
+    .split_half {
+        width: 100%;
+    }
+    .split_half td, .split_half th{
+        text-align: left;
+    }
+
+    .inv-transactions table th {
+        font-weight: bold;
+        background-color: #f1f1f1;
+        border: 1px solid #bbbbbb;        
+        font-size: 12px;
+    }
+    table th, table td {
+        margin: 0;
+        padding: 5px;
     }
 </style>

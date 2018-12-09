@@ -193,15 +193,19 @@ app.get('/invoice/user/:user_id', (req, res) => {
 app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
     let sql = `SELECT * FROM invoices where seller_id= (?) and invoices.id = (?)`;
+    let sql2 = `SELECT * FROM users where id = (?)`;
 
-    db.all(sql, [req.params.user_id, req.params.invoice_id], (err, rows) => {
+    db.get(sql, [req.params.user_id, req.params.invoice_id], (err, invoice) => {
         if(err) {
             throw err;
         }
 
-        return res.json({
-            status: true,
-            invoice: rows[0]
+        db.get(sql2, [invoice.buyer_id], (err, buyer) => {
+            return res.json({
+                status: true,
+                invoice: invoice,
+                buyer: buyer,
+            });
         });
     });
 });
