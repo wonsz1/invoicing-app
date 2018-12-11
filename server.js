@@ -13,6 +13,7 @@ const jwt = require('jsonwebtoken');
 
 let registerValidation = require('./validation/register.js');
 let invoiceValidate = require('./validation/invoice.js');
+let clientValidate = require('./validation/client.js');
 
 const app = express();
 
@@ -224,4 +225,46 @@ app.get('/invoice/transactions/:invoice_id', (req, res) => {
             transactions: rows
         });
     });
+});
+
+app.get('/client/user/:user_id', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `SELECT * FROM clients where user_id= (?)`;
+
+    db.all(sql, [req.params.user_id], (err, rows) => {
+        if(err) {
+            throw err;
+        }
+
+        return res.json({
+            status: true,
+            clients: rows
+        });
+    });
+});
+
+
+app.post('/client', validate(clientValidate), (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `INSERT INTO invoices(name, address, nip, email, account_number) 
+    VALUES(?, ?, ?, ?, ?)`;
+
+    db.serialize( () => {
+        db.run(sql, [
+          req.body.name,
+          `${req.body.street} ${req.body.postal_code} ${req.body.city}`,
+          req.body.nip,
+          req.body.emial,
+          req.body.account_number
+        ], function (err) {
+            if(err) {
+                throw err;
+            }
+
+            return res.json({
+              status: true,
+              message: "Client created"
+            });
+        });
+    })
 });

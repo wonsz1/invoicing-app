@@ -22,6 +22,17 @@ module.exports = {
                 password TEXT
                )`);
 
+        db.run(`CREATE TABLE clients(
+                id INTEGER PRIMARY KEY,
+                user_id INTEGER,
+                company_name TEXT,
+                nip TEXT,
+                address TEXT,
+                account_number TEXT,
+                email TEXT,
+                FOREIGN KEY(user_id) REFERENCES users(id)
+               )`);
+
         db.run(`CREATE TABLE invoices(
                 id INTEGER PRIMARY KEY,
                 name TEXT,
