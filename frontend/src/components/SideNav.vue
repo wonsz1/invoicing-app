@@ -27,6 +27,9 @@ export default {
         },
         login() {
             store.dispatch('login');
+        },
+        viewClients() {
+            this.$router.push({ name: "Client"});
         }
     },
     computed: {
@@ -43,9 +46,10 @@ export default {
         <div id="leftsidenav" class="sidenav">
             <p style="cursor:pointer" v-on:click="closeNav">Close Nav</p>
             <p v-if="isLoggedIn">{{$t('company')}}: {{ user.company_name }}</p>
-            <p v-if="isLoggedIn">{{$t('user')}}: {{ user.email }}</p>
+            <p v-if="isLoggedIn">{{ user.email }}</p>
             <p class="clickable" v-on:click="setActive('create')">{{$t('create_inv')}}</p>
             <p class="clickable" v-on:click="setActive('list')">{{$t('list_inv')}}</p>
+            <p class="clickable" v-on:click="viewClients">{{$t('client_list')}}</p>
             <p class="clickable" v-if="isLoggedIn" v-on:click="logout">{{$t('logout')}}</p>
             <a href="/" v-if="!isLoggedIn" >{{$t('login')}}</a>
         </div>

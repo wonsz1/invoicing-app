@@ -28,6 +28,12 @@
         "login": "Zaloguj",
         "company": "Firma",
         "buyer": "Nabywca",
-        "seller": "Sprzedawca"
+        "seller": "Sprzedawca",
+        "clients": "Klienci",
+        "nip": "NIP",
+        "address": "Adres",
+        "client_list": "Klienci",
+        "user": "Uytkownik",
+        "save": "Zapisz"
     }
 }
