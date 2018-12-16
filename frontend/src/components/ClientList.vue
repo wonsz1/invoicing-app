@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <h3>{{$t('clients')}}</h3>
-                    <form @submit.prevent="onSubmit">
+                    <form @submit.prevent="saveClient">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -20,18 +20,21 @@
                             <tbody>
                                 <tr>
                                     <td><button class="btn btn-primary ">{{$t('save')}}</button></td>
-                                    <td><input type="text" id="client_name" class="form-control" /></td>
-                                    <td><input type="text" id="client_address" class="form-control" placeholder="" /></td>
-                                    <td><input type="text" id="client_nip" class="form-control" /></td>
+                                    <td><input type="text" id="client_name" class="form-control" v-model="client.company_name" /></td>
+                                    <td><input type="text" id="client_address" class="form-control" placeholder="" v-model="client.address" /></td>
+                                    <td><input type="text" id="client_nip" class="form-control" v-model="client.nip" /></td>
                                 </tr>
                                 
                                 <template v-for="client in clients">
                                     <tr :key="client.id">
                                         <td scope="row">{{ client.id }}</td>
-                                        <td>{{ client.name }}</td>
+                                        <td>{{ client.company_name }}</td>
                                         <td>{{ client.address }}</td>
                                         <td>{{ client.nip }}</td>
-                                        <td><a href="#" class="btn btn-success" v-on:click="editClient(client.id)">{{$t('edit')}}</a></td>
+                                        <td>
+                                            <a href="#" class="btn btn-success" v-on:click="editClient(client.id)">{{$t('edit')}}</a>
+                                            <a href="#" class="btn btn-danger" v-on:click="deleteClient(client.id)">{{$t('delete')}}</a>
+                                        </td>
                                     </tr>
                                 </template>
                             </tbody>
@@ -57,14 +60,49 @@
       },
       data() {
         return {
-          clients: [],
-          user: store.getters.user
+            client: {
+                id: 0,
+                company_name: "",
+                address: "",
+                nip: "",
+                email: "",
+                account_number: "",
+                user_id: store.getters.user.id
+            },
+            clients: [],
+            user: store.getters.user
         };
       },
       methods: {
           editClient(id) {
             console.log(id);
             this.$router.push({ name: 'Client', params: { id: id }});
+          },
+          saveClient() {
+            axios.defaults.headers.common['Authorization'] = store.getters.token;
+            axios.post(env.default.SERVER_ADDR + 'client', this.client).then(res => {
+                console.log(res.data.message);
+                this.client.id = res.data.client_id
+                this.clients.push(this.client);
+
+                //reset client values
+                this.client= {
+                    id: 0,
+                    company_name: "",
+                    address: "",
+                    nip: "",
+                    email: "",
+                    account_number: "",
+                    user_id: store.getters.user.id
+                }
+            });
+          },
+          deleteClient() {
+            axios.defaults.headers.common['Authorization'] = store.getters.token;
+            axios.post(env.default.SERVER_ADDR + 'client', this.client).then(res => {
+                console.log(res.data.message);
+                //todo
+            });
           }
       },
       mounted() {

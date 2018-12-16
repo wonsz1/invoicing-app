@@ -246,16 +246,17 @@ app.get('/client/user/:user_id', (req, res) => {
 
 app.post('/client', validate(clientValidate), (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `INSERT INTO invoices(name, address, nip, email, account_number) 
-    VALUES(?, ?, ?, ?, ?)`;
+    let sql = `INSERT INTO clients(company_name, address, nip, email, account_number, user_id) 
+    VALUES(?, ?, ?, ?, ?, ?)`;
 
     db.serialize( () => {
         db.run(sql, [
-          req.body.name,
-          `${req.body.street} ${req.body.postal_code} ${req.body.city}`,
+          req.body.company_name,
+          req.body.address,
           req.body.nip,
-          req.body.emial,
-          req.body.account_number
+          req.body.email,
+          req.body.account_number,
+          req.body.user_id
         ], function (err) {
             if(err) {
                 throw err;
@@ -263,7 +264,8 @@ app.post('/client', validate(clientValidate), (req, res) => {
 
             return res.json({
               status: true,
-              message: "Client created"
+              message: "Client created",
+              client_id: this.lastID
             });
         });
     })
