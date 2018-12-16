@@ -229,7 +229,7 @@ app.get('/invoice/transactions/:invoice_id', (req, res) => {
 
 app.get('/client/user/:user_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT * FROM clients where user_id= (?)`;
+    let sql = `SELECT * FROM clients where user_id = (?)`;
 
     db.all(sql, [req.params.user_id], (err, rows) => {
         if(err) {
@@ -269,4 +269,20 @@ app.post('/client', validate(clientValidate), (req, res) => {
             });
         });
     })
+});
+
+app.delete('/client/:client_id', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `DELETE FROM clients WHERE id = (?)`;
+
+    db.run(sql, [req.params.client_id], function(err) {
+        if (err) {
+            throw err;
+        }
+        
+        return res.json({
+            status: true,
+            message: "Client deleted" + req.params.client_id
+        });
+    });
 });
