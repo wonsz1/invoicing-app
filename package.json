@@ -20,7 +20,7 @@
     "joi-date-extensions": "^1.2.0",
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.3.4",
-    "nodemon": "^1.18.5",
+    "nodemon": "^1.18.9",
     "path": "^0.12.7",
     "simple-node-logger": "^0.93.40",
     "sqlite3": "^4.0.2",
