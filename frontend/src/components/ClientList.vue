@@ -56,7 +56,7 @@
     export default {
       name: 'ClientList',
       components: {
-        Header,
+        Header
       },
       data() {
         return {

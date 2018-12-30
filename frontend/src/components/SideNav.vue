@@ -10,12 +10,8 @@ export default {
         };
     },
     methods: {
-        setActive(option) {
-            this.active = option;
-            this.$parent.$parent.isactive = option;
-        },
         openNav() {
-            document.getElementById("leftsidenav").style.width = '20%';
+            document.getElementById("leftsidenav").style.width = '15%';
             document.getElementById("rightsidenav").style.width = '100%';
         },
         closeNav() {
@@ -27,9 +23,6 @@ export default {
         },
         login() {
             store.dispatch('login');
-        },
-        viewClients() {
-            this.$router.push({ name: "Client"});
         }
     },
     computed: {
@@ -47,9 +40,9 @@ export default {
             <p style="cursor:pointer" v-on:click="closeNav">Close Nav</p>
             <p v-if="isLoggedIn">{{$t('company')}}: {{ user.company_name }}</p>
             <p v-if="isLoggedIn">{{ user.email }}</p>
-            <p class="clickable" v-on:click="setActive('create')">{{$t('create_inv')}}</p>
-            <p class="clickable" v-on:click="setActive('list')">{{$t('list_inv')}}</p>
-            <p class="clickable" v-on:click="viewClients">{{$t('client_list')}}</p>
+            <router-link :to="{ name: 'CreateInvoice' }">{{$t('create_inv')}}</router-link>
+            <router-link :to="{ name: 'Invoices' }">{{$t('list_inv')}}</router-link>
+            <router-link :to="{ name: 'Clients' }">{{$t('client_list')}}</router-link>
             <p class="clickable" v-if="isLoggedIn" v-on:click="logout">{{$t('logout')}}</p>
             <a href="/" v-if="!isLoggedIn" >{{$t('login')}}</a>
         </div>
@@ -67,7 +60,7 @@ export default {
 }
 .sidenav {
   height: 100%;
-  width: 0;
+  width: 15%;
   position: fixed;
   z-index: 10;
   top: 0;
@@ -80,12 +73,11 @@ export default {
   text-align: center;
 }
 .sidenav a {
-  padding: 8px 8px 8px 32px;
   text-decoration: none;
-  font-size: 25px;
   color: #818181;
   display: block;
   transition: 0.3s;
+  margin-bottom: 1rem;
 }
 .sidenav a:hover {
   color: #f1f1f1;

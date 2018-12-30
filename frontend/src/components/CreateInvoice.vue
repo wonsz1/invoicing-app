@@ -1,4 +1,6 @@
 <template>
+  <div class="container-fluid" style="padding: 0px;">
+    <Header/>
     <div class="container">
         <div class="tab-pane fade show active">
                     <form @submit.prevent="onSubmit">
@@ -108,18 +110,23 @@
                 </div>
         </div>
     </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 import Vue from 'vue'
 import store from '../services/store';
+import Header from './Header';
 const env = require('../config');
 import { setUiLocale, t, currentLocale } from '../services/i18n'
 Vue.prototype.$t = t
 
 export default {
     name: 'CreateInvoice',
+    components: {
+        Header
+    },
     data() {
         return {
             invoice: {

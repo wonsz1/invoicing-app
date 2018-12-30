@@ -34,6 +34,8 @@
         "address": "Adres",
         "client_list": "Klienci",
         "user": "Uytkownik",
-        "save": "Zapisz"
+        "save": "Zapisz",
+        "edit": "Edytuj",
+        "delete": "Usun"
     }
 }

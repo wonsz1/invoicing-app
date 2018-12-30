@@ -1,4 +1,6 @@
 <template>
+  <div class="container-fluid" style="padding: 0px;">
+    <Header/>
     <div class="container">
         <div class="tab-pane fade show active">
             <div class="row">
@@ -43,15 +45,20 @@
             </div>
         </div>
     </div>
+  </div>
 </template>
 
 <script>
     import axios from 'axios';
     import store from '../services/store';
+    import Header from './Header';
     const env = require('../config');
 
     export default {
       name: 'InvoiceList',
+      components: {
+        Header
+      },
       data() {
         return {
           invoices: [],

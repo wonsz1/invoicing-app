@@ -4,6 +4,9 @@ import SignUp from '@/components/SignUp'
 import Dashboard from '@/components/Dashboard'
 import ViewInvoice from '@/components/ViewInvoice'
 import ClientList from '@/components/ClientList'
+import InvoiceList from '@/components/InvoiceList'
+import CreateInvoice from '@/components/CreateInvoice'
+import NotFound from '@/components/NotFound'
 import { defaultLocale } from '../config/i18n'
 import store from '../services/store';
 Vue.use(Router)
@@ -38,11 +41,26 @@ let router = new Router({
                     component: ViewInvoice
                 },
                 {
+                    path: 'invoice',
+                    name: 'Invoices',
+                    component: InvoiceList
+                },
+                {
+                    path: 'new-invoice',
+                    name: 'CreateInvoice',
+                    component: CreateInvoice
+                },
+                {
                     path: 'client',
-                    name: "Client",
+                    name: "Clients",
                     component: ClientList
                 }
             ]
+        },
+        {
+            path: '*',
+            name: 'NotFound',
+            component: NotFound
         }
     ]
 })
