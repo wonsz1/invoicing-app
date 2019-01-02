@@ -52,12 +52,25 @@
                                     <tbody>
                                         <template>
                                             <tr>
-                                                <td><input type="text" id="txn_name_modal" class="form-control" /></td>
-                                                <td><input type="text" id="txn_quantity_modal" class="form-control" value="1"  v-on:blur="calculateValues()" /></td>
-                                                <td><input type="text" id="txn_price_net_modal" class="form-control" v-on:blur="calculateValues()" /></td>
-                                                <td><input type="text" id="txn_vat_modal" class="form-control" v-on:blur="calculateValues()" /></td>
-                                                <td><input type="text" id="txn_value_net_modal" class="form-control" /></td>
-                                                <td><input type="text" id="txn_value_gross_modal" class="form-control" /></td>
+                                                <td>
+                                                    <input type="text" id="txn_name_modal" class="form-control" v-model="transaction.name" /> 
+                                                    <div class="error">{{ errors.name }}</div>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="txn_quantity_modal" class="form-control" value="1" v-model="transaction.quantity" v-on:blur="calculateValues()" />
+                                    
+                                                    <div class="error">{{ errors.quantity }}</div>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="txn_price_net_modal" class="form-control"  v-model="transaction.price_net" v-on:blur="calculateValues()" />
+                                                    <div class="error">{{ errors.price_net }}</div>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="txn_vat_modal" class="form-control"  v-model="transaction.vat" v-on:blur="calculateValues()" />
+                                                    <div class="error">{{ errors.vat }}</div>
+                                                </td>
+                                                <td><input type="text" id="txn_value_net_modal" class="form-control" v-model="transaction.value_net" /></td>
+                                                <td><input type="text" id="txn_value_gross_modal" class="form-control" v-model="transaction.value_gross" /></td>
                                                 <td>
                                                     <button type="button" class="btn btn-secondary" v-on:click="clearTransaction()">X</button>
                                                     <button type="button" class="btn btn-success" v-on:click="saveTransaction()">+</button>
@@ -139,44 +152,67 @@ export default {
                 sum_gross: 0,
                 paid: 0,
             },
+            transaction: {
+                name: "",
+                quantity: 1,
+                price_net: "",
+                vat: "",
+                value_net: "",
+                value_gross: ""            
+            },
             transactions: [],
             nextTxnId: 1,
             loading: "",
-            status: ""
+            status: "",
+            errors: {}
         }
     },
     methods: {
         saveTransaction() {
+            this.errors = {};
+
+            if(!this.transaction.name) {
+                this.errors.name = "Required";
+            }
+            if(!this.transaction.quantity) {
+                this.errors.quantity = "Required";
+            }
+            if(!this.transaction.price_net) {
+                this.errors.price_net = "Required";
+            }
+            if(!this.transaction.vat) {
+                this.errors.vat = "Required";
+            }
+
+            if(Object.keys(this.errors).length) {
+                return false;
+            }
+
             this.transactions.push({
                 id: this.nextTxnId,
-                name: document.getElementById('txn_name_modal').value,
-                quantity: document.getElementById('txn_quantity_modal').value,
-                price_net: document.getElementById('txn_price_net_modal').value,
-                vat: document.getElementById('txn_vat_modal').value,
-                value_net: document.getElementById('txn_value_net_modal').value,
-                value_gross: document.getElementById('txn_value_gross_modal').value              
+                name: this.transaction.name,
+                quantity: this.transaction.quantity,
+                price_net: this.transaction.price_net,
+                vat: this.transaction.vat,
+                value_net: this.transaction.value_net,
+                value_gross: this.transaction.value_gross              
             });
 
             this.nextTxnId++;
             this.calcTotal();
 
             //clear form fields
-            this.clearTransaction();
+            this.transaction = {
+                name: "",
+                quantity: 1,
+                price_net: "",
+                vat: "",
+            };
         },
         calculateValues() {
-            const quantity = document.getElementById('txn_quantity_modal').value;
-            const price_net = document.getElementById('txn_price_net_modal').value;
-            const vat = document.getElementById('txn_vat_modal').value ? document.getElementById('txn_vat_modal').value : 0;
-            const value_net = document.getElementById('txn_value_net_modal').value = quantity * price_net;
-            document.getElementById('txn_value_gross_modal').value = (value_net * (1 + vat / 100)).toFixed(2);
-        },
-        clearTransaction() {
-            document.getElementById('txn_name_modal').value = "";
-            document.getElementById('txn_quantity_modal').value = "1";
-            document.getElementById('txn_price_net_modal').value = "";
-            document.getElementById('txn_vat_modal').value = "";
-            document.getElementById('txn_value_net_modal').value = "";
-            document.getElementById('txn_value_gross_modal').value = "";
+            const vat = this.transaction.vat ? this.transaction.vat : 0;
+            const value_net = this.transaction.value_net = this.transaction.quantity * this.transaction.price_net;
+            this.transaction.value_gross = (value_net * (1 + vat / 100)).toFixed(2);
         },
         deleteTransaction(id) {
             this.transactions = this.transactions.filter(el => {
@@ -243,3 +279,9 @@ export default {
     }
 }
 </script>
+
+<style>
+.error {
+    color: red;
+}
+</style>
