@@ -2,7 +2,7 @@
   <div class="container-fluid" style="padding: 0px;">
     <Header/>
     <div class="container">
-        <div class="tab-pane fade show active">
+        <div class="tab-pane fade show active text-left">
                     <form @submit.prevent="onSubmit">
                         <div class="row">
                             <div class="col-sm-2">
@@ -31,6 +31,36 @@
                                 <div class="form-group">
                                     <label for="">{{$t('sell_date')}}</label>
                                     <input type="text" class="form-control" v-model="invoice.sell_date" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4>{{$t('seller')}}</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <h4>{{$t('buyer')}}</h4>
+                                <div class="form-group">
+                                    <select class="form-control" v-model="clientSelected" v-on:change="selectClient()">
+                                        <option selected="selected">{{$t('select')}}</option>
+                                        <option v-for="client in clients" v-bind:key="client.id" v-bind:value="client">
+                                            {{ client.company_name }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="">{{$t('company_name')}}</label>
+                                    <input type="text" class="form-control" v-model="client.company_name" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="">{{$t('nip')}}</label>
+                                    <input type="text" class="form-control" v-model="client.nip" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="">{{$t('address')}}</label>
+                                    <textarea class="form-control" v-model="client.address"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -161,11 +191,25 @@ export default {
                 value_gross: ""            
             },
             transactions: [],
+            clients: [],
+            client: {},
+            clientSelected: {},
             nextTxnId: 1,
             loading: "",
             status: "",
             errors: {}
         }
+    },
+    mounted() {
+        axios.defaults.headers.common['Authorization'] = store.getters.token;
+        axios.get(env.default.SERVER_ADDR + `client/user/${store.getters.user.id}`).then(res => {
+          this.clients = res.data.clients;
+        }).catch(err => {
+            console.log(err);
+            if(err.response.status == 401) {
+                this.$router.push({ name: 'SignUp' })
+            }
+        })
     },
     methods: {
         saveTransaction() {
@@ -232,6 +276,11 @@ export default {
             this.invoice.sum_net = sum_net;
             this.invoice.sum_vat = sum_vat;
             this.invoice.sum_gross = sum_gross;
+        },
+        selectClient() {
+            this.client.company_name = this.clientSelected.company_name;
+            this.client.nip = this.clientSelected.nip;
+            this.client.address = this.clientSelected.address;
         },
         onSubmit() {
             let txn_name = [];

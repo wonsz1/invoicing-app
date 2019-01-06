@@ -36,6 +36,8 @@
         "user": "Uytkownik",
         "save": "Zapisz",
         "edit": "Edytuj",
-        "delete": "Usun"
+        "delete": "Usun",
+        "company_name": "Nazwa firmy",
+        "select": "Wybierz"
     }
 }
