@@ -19,6 +19,7 @@
                                 <div class="form-group">
                                     <label for="">{{$t('number')}}</label>
                                     <input type="text" class="form-control" placeholder="eg FV/1222/10/2044" v-model="invoice.name" />
+                                    <div class="error">{{ errors.invoice }}</div>
                                 </div>
                             </div>
                             <div class="col-sm-2">
@@ -132,6 +133,8 @@
                                 </table>
 
                                 <div class="form-group">
+                                    <div class="error">{{ errors.transactions }}</div>
+
                                     <button class="btn btn-primary ">{{$t('create_invoice')}}</button>
                                     {{ loading }}
                                     <p></p>
@@ -283,46 +286,32 @@ export default {
             this.client.address = this.clientSelected.address;
         },
         onSubmit() {
-            let txn_name = [];
-            let txn_quantity = [];
-            let txn_price_net = [];
-            let txn_vat = [];
-            let txn_value_net = [];
-            let txn_value_gross = [];
-
-            this.transactions.forEach(element => {
-                txn_name.push(element.name);
-                txn_quantity.push(element.quantity);
-                txn_price_net.push(element.price_net);
-                txn_vat.push(element.vat);
-                txn_value_net.push(element.value_net);
-                txn_value_gross.push(element.value_gross);
-            });
+            this.errors = {};
+            
+            if(this.transactions.length < 1) {
+                this.errors.transactions = "You need to add at least one transaction";
+            }
+            if(!this.invoice.name) {
+                this.errors.invoice = "Required";
+            }
+            if(Object.keys(this.errors).length) {
+                return false;
+            }
 
             let formData = {
                 seller_id: store.getters.user.id,
-                buyer_id: 8,
-                name: this.invoice.name,
-                type: this.invoice.type,
-                sell_date: this.invoice.sell_date,
-                issue_date: this.invoice.issue_date,
-                sum_net: this.invoice.sum_net,
-                sum_vat: this.invoice.sum_vat,
-                sum_gross: this.invoice.sum_gross,
-                paid: this.invoice.paid,
-                //transactions: transactions,
-                txn_name: txn_name,
-                txn_quantity: txn_quantity,
-                txn_price_net: txn_price_net,
-                txn_vat: txn_vat,
-                txn_value_net: txn_value_net,
-                txn_value_gross: txn_value_gross
+                buyer_id: this.clientSelected.id,
+                buyer: this.clientSelected, //use when client is not selected
+                invoice: this.invoice,
+                transactions: this.transactions
             }; 
 
             axios.defaults.headers.common['Authorization'] = store.getters.token;
             axios.post(env.default.SERVER_ADDR + 'invoice', formData).then(res => {
                 this.loading = "";
                 this.status = res.data.message;
+                this.transactions = {};
+                this.invoice = {};
             });
         }
     }

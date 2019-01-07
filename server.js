@@ -137,32 +137,32 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
 
     db.serialize( () => {
         db.run(sql, [
-          req.body.name,
+          req.body.invoice.name,
           req.body.buyer_id,
           req.body.seller_id,
-          req.body.type,
-          req.body.sell_date,
-          req.body.issue_date,
-          req.body.sum_net,
-          req.body.sum_vat,
-          req.body.sum_gross,
+          req.body.invoice.type,
+          req.body.invoice.sell_date,
+          req.body.invoice.issue_date,
+          req.body.invoice.sum_net,
+          req.body.invoice.sum_vat,
+          req.body.invoice.sum_gross,
           0
         ], function (err) { //it need to be function not arrow function, because of the absence of a 'this' in arrow lambdas
             if(err) {
                 throw err;
             }
 
-            for(let i = 0; i < req.body.txn_name.length; i++) {
+            for(let i = 0; i < req.body.transactions.length; i++) {
               let query = `INSERT INTO transactions(name, price_net, value_net, vat, value_gross, quantity, invoice_id) 
               VALUES(?, ?, ?, ?, ?, ?, ?)`;
 
               db.run(query, [
-                req.body.txn_name[i],
-                req.body.txn_price_net[i],
-                req.body.txn_value_net[i],
-                req.body.txn_vat[i],
-                req.body.txn_value_gross[i],
-                req.body.txn_quantity[i],
+                req.body.transactions[i].name,
+                req.body.transactions[i].price_net,
+                req.body.transactions[i].value_net,
+                req.body.transactions[i].vat,
+                req.body.transactions[i].value_gross,
+                req.body.transactions[i].quantity,
                 this.lastID
               ]);
             }
