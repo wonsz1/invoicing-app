@@ -84,24 +84,24 @@
                                         <template>
                                             <tr>
                                                 <td>
-                                                    <input type="text" id="txn_name_modal" class="form-control" v-model="transaction.name" /> 
+                                                    <input type="text" class="form-control" v-model="transaction.name" /> 
                                                     <div class="error">{{ errors.name }}</div>
                                                 </td>
                                                 <td>
-                                                    <input type="text" id="txn_quantity_modal" class="form-control" value="1" v-model="transaction.quantity" v-on:blur="calculateValues()" />
+                                                    <input type="text" class="form-control" value="1" v-model="transaction.quantity" v-on:blur="calculateValues()" />
                                     
                                                     <div class="error">{{ errors.quantity }}</div>
                                                 </td>
                                                 <td>
-                                                    <input type="text" id="txn_price_net_modal" class="form-control"  v-model="transaction.price_net" v-on:blur="calculateValues()" />
+                                                    <input type="text" class="form-control"  v-model="transaction.price_net" v-on:input="calculateValues()" />
                                                     <div class="error">{{ errors.price_net }}</div>
                                                 </td>
                                                 <td>
-                                                    <input type="text" id="txn_vat_modal" class="form-control"  v-model="transaction.vat" v-on:blur="calculateValues()" />
+                                                    <input type="text" class="form-control"  v-model="transaction.vat" v-on:input="calculateValues()" />
                                                     <div class="error">{{ errors.vat }}</div>
                                                 </td>
-                                                <td><input type="text" id="txn_value_net_modal" class="form-control" v-model="transaction.value_net" /></td>
-                                                <td><input type="text" id="txn_value_gross_modal" class="form-control" v-model="transaction.value_gross" /></td>
+                                                <td><input type="text" class="form-control" v-model="transaction.value_net" /></td>
+                                                <td><input type="text" class="form-control" v-model="transaction.value_gross" /></td>
                                                 <td>
                                                     <button type="button" class="btn btn-secondary" v-on:click="clearTransaction()">X</button>
                                                     <button type="button" class="btn btn-success" v-on:click="saveTransaction()">+</button>
@@ -186,12 +186,8 @@ export default {
                 paid: 0,
             },
             transaction: {
-                name: "",
-                quantity: 1,
-                price_net: "",
-                vat: "",
-                value_net: "",
-                value_gross: ""            
+                quantity: 1,    
+                value_gross: ""     
             },
             transactions: [],
             clients: [],
@@ -235,26 +231,14 @@ export default {
                 return false;
             }
 
-            this.transactions.push({
-                id: this.nextTxnId,
-                name: this.transaction.name,
-                quantity: this.transaction.quantity,
-                price_net: this.transaction.price_net,
-                vat: this.transaction.vat,
-                value_net: this.transaction.value_net,
-                value_gross: this.transaction.value_gross              
-            });
+            this.transaction.id = this.nextTxnId;
+            this.transactions.push(this.transaction);
 
             this.nextTxnId++;
             this.calcTotal();
 
             //clear form fields
-            this.transaction = {
-                name: "",
-                quantity: 1,
-                price_net: "",
-                vat: "",
-            };
+            this.clearTransaction();
         },
         calculateValues() {
             const vat = this.transaction.vat ? this.transaction.vat : 0;
@@ -267,6 +251,11 @@ export default {
             });
             this.nextTxnId--;
             this.calcTotal();
+        },
+        clearTransaction() {
+            this.transaction = {
+                quantity: 1,
+            };
         },
         calcTotal() {
             let sum_net = 0, sum_vat = 0, sum_gross = 0, quantity = 0;
@@ -311,7 +300,10 @@ export default {
                 this.loading = "";
                 this.status = res.data.message;
                 this.transactions = {};
-                this.invoice = {};
+                this.invoice = {
+                    sell_date: new Date().toISOString().slice(0,10),
+                    issue_date: new Date().toISOString().slice(0,10),
+                };
             });
         }
     }
