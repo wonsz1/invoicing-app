@@ -175,6 +175,30 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
     })
 });
 
+app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let invSql = `SELECT * FROM invoices where seller_id= (?) and invoices.id = (?)`;
+    let clientSql = `SELECT * FROM clients where id = (?)`;
+
+    db.get(invSql, [req.params.user_id, req.params.invoice_id], (err, invoice) => {
+        if(err) {
+            throw err;
+        }
+
+        db.get(clientSql, [invoice.buyer_id], (err, buyer) => {
+            if(err) {
+                throw err;
+            }
+
+            return res.json({
+                status: true,
+                invoice: invoice,
+                buyer: buyer,
+            });
+        });
+    });
+});
+
 app.get('/invoice/user/:user_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
     let sql = `SELECT * FROM invoices where seller_id= (?)`;
@@ -187,26 +211,6 @@ app.get('/invoice/user/:user_id', (req, res) => {
         return res.json({
             status: true,
             invoices: rows
-        });
-    });
-});
-
-app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
-    let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT * FROM invoices where seller_id= (?) and invoices.id = (?)`;
-    let sql2 = `SELECT * FROM users where id = (?)`;
-
-    db.get(sql, [req.params.user_id, req.params.invoice_id], (err, invoice) => {
-        if(err) {
-            throw err;
-        }
-
-        db.get(sql2, [invoice.buyer_id], (err, buyer) => {
-            return res.json({
-                status: true,
-                invoice: invoice,
-                buyer: buyer,
-            });
         });
     });
 });

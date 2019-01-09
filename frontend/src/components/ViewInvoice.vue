@@ -24,16 +24,20 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td></td>
+                                        <td>{{ user.company_name }}</td>
                                         <td id="buyer">{{ buyer.company_name }}</td>
                                     </tr>
                                     <tr>
-                                        <td></td>
+                                        <td>{{ user.address }}</td>
                                         <td id="buyer">{{ buyer.address }}</td>
                                     </tr>
                                     <tr>
+                                        <td>NIP {{ user.nip }}</td>
+                                        <td id="buyer">NIP {{ buyer.nip }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ user.account_number }}</td>
                                         <td></td>
-                                        <td id="buyer">{{ buyer.nip }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -64,9 +68,20 @@
                                 </tbody>
                             </table>
 
-                            <p class="right"><b>{{$t('value_net')}}</b> {{ invoice.sum_net / 100 }}zł</p>
-                            <p class="right"><b>{{$t('vat')}}</b> {{ invoice.sum_vat / 100 }}zł</p>
-                            <p class="right"><b>{{$t('value_gross')}}</b> {{ invoice.sum_gross / 100 }}zł</p>
+                            <table class="summary_table">
+                                <tr>
+                                    <td><b>{{$t('value_net')}}</b></td>
+                                    <td class="summary_number">{{ invoice.sum_net / 100 }}zł</td>
+                                </tr>
+                                <tr>
+                                    <td><b>{{$t('vat')}}</b></td>
+                                    <td class="summary_number">{{ invoice.sum_vat / 100 }}zł</td>
+                                </tr>
+                                <tr>
+                                    <td><b>{{$t('value_gross')}}</b></td>
+                                    <td class="summary_number">{{ invoice.sum_gross / 100 }}zł</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -101,9 +116,6 @@
           },
           getInvoiceTransactions() {
             return  axios.get(env.default.SERVER_ADDR + `invoice/transactions/${this.$route.params.id}`)
-          },
-          getSeller() {
-            return  axios.get(env.default.SERVER_ADDR + `invoice/transactions/${this.$route.params.id}`)
           }
       },
       mounted() {
@@ -111,7 +123,6 @@
         axios.defaults.headers.common['Authorization'] = store.getters.token;
         axios.all([this.getInvoice(), this.getInvoiceTransactions()]).then(axios.spread(function(inv, trans) {
           self.buyer = inv.data.buyer;
-          console.log(inv.data.buyer);
           self.invoice = inv.data.invoice;
           self.transactions = trans.data.transactions;
         })).catch(err => {
@@ -159,8 +170,14 @@
         border: 1px solid #bbbbbb;        
         font-size: 12px;
     }
-    table th, table td {
+    table th, table td, .table th, .table td {
         margin: 0;
         padding: 5px;
+    }
+    .summary_number {
+        width: 15%;
+    }
+    .summary_table {
+        width: 100%;
     }
 </style>

@@ -39,6 +39,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <h4>{{$t('seller')}}</h4>
+                                <p>{{ seller.company_name }}</p>
+                                <p>NIP {{ seller.nip }}</p>
+                                <p>{{ seller.address }}</p>
+                                <p>{{ seller.account_number }}</p>
                             </div>
                             <div class="col-md-6">
                                 <h4>{{$t('buyer')}}</h4>
@@ -193,6 +197,7 @@ export default {
             clients: [],
             client: {},
             clientSelected: {},
+            seller: store.getters.user,
             nextTxnId: 1,
             loading: "",
             status: "",
