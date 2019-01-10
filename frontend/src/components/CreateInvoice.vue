@@ -117,10 +117,10 @@
                                                 <!-- <td>{{ txn.id }}</td> -->
                                                 <td>{{ txn.name }}</td>
                                                 <td>{{ txn.quantity }}</td>
-                                                <td>{{ txn.price_net }}</td>
+                                                <td>{{ (txn.price_net/1).toFixed(2) }}</td>
                                                 <td>{{ txn.vat }}</td>
-                                                <td>{{ txn.value_net }}</td>
-                                                <td>{{ txn.value_gross }}</td>
+                                                <td>{{ (txn.value_net/1).toFixed(2) }}</td>
+                                                <td>{{ (txn.value_gross/1).toFixed(2) }}</td>
                                                 <td><button type="button" class="btn btn-danger" v-on:click="deleteTransaction(txn.id)">X</button></td>
                                             </tr>
                                         </template>
@@ -130,7 +130,7 @@
                                             <td></td>
                                             <td></td>
                                             <td>{{$t('sum')}}:</td>
-                                            <td>{{ invoice.sum_gross / 100 }}</td>
+                                            <td>{{ (invoice.sum_gross / 100).toFixed(2) }}</td>
                                             <td>pln</td>
                                         </tr>
                                     </tbody>
@@ -266,7 +266,7 @@ export default {
             let sum_net = 0, sum_vat = 0, sum_gross = 0, quantity = 0;
             this.transactions.forEach(element => {
                 sum_net += element.value_net * 100;
-                sum_vat += element.vat * 100;
+                sum_vat += (element.value_gross - element.value_net) * 100;
                 sum_gross += element.value_gross * 100;
             });
 

@@ -16,8 +16,6 @@
                                 <th scope="col">{{$t('client')}}</th>
                                 <th scope="col">{{$t('sell_date')}}</th>
                                 <th scope="col">{{$t('issue_date')}}</th>
-                                <th scope="col">{{$t('name')}}</th>
-                                <th scope="col">{{$t('type')}}</th>
                                 <th scope="col">{{$t('status')}}</th>
                                 <th scope="col"></th>
                             </tr>
@@ -27,13 +25,11 @@
                                 <tr :key="inv.id">
                                     <td scope="row">{{ inv.id }}</td>
                                     <td>{{ inv.name }}</td>
-                                    <td>{{ inv.sum_net / 100 }}zł</td>
-                                    <td>{{ inv.sum_gross / 100 }}zł</td>
-                                    <td>{{ inv.buyer_id }}</td>
+                                    <td>{{ (inv.sum_net / 100).toFixed(2) }}zł</td>
+                                    <td>{{ (inv.sum_gross / 100).toFixed(2) }}zł</td>
+                                    <td>{{ inv.client }}</td>
                                     <td>{{ new Date(inv.sell_date).toISOString().split("T")[0] }}</td>
                                     <td>{{ new Date(inv.issue_date).toISOString().split("T")[0] }}</td>
-                                    <td>{{ inv.name }}</td>
-                                    <td>{{ inv.type }}</td>
                                     <td v-if="inv.paid == 0">{{$t('unpaid')}}</td>
                                     <td v-else>{{$t('paid')}}</td>
                                     <td><a href="#" class="btn btn-success" v-on:click="viewInvoice(inv.id)">{{$t('show')}}</a></td>

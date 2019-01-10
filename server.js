@@ -201,7 +201,7 @@ app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
 
 app.get('/invoice/user/:user_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT * FROM invoices where seller_id= (?)`;
+    let sql = `SELECT invoices.*, clients.company_name as client FROM invoices join clients on invoices.buyer_id = clients.id where seller_id= (?)`;
 
     db.all(sql, [req.params.user_id], (err, rows) => {
         if(err) {

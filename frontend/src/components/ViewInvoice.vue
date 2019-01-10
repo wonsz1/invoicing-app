@@ -46,23 +46,25 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Lp.#</th>
+                                        <th scope="col">Lp.</th>
                                         <th scope="col">{{$t('name')}}</th>
                                         <th scope="col">{{$t('quantity')}}</th>
                                         <th scope="col">{{$t('value_net')}}</th>
-                                        <th scope="col">{{$t('vat')}}</th>
+                                        <th scope="col">{{$t('vat')}} %</th>
+                                        <th scope="col">{{$t('value_vat')}}</th>
                                         <th scope="col">{{$t('value_gross')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-for="trans in transactions">
+                                    <template v-for="(trans, index) in transactions">
                                         <tr :key="trans.id">
-                                            <td scope="row">{{ trans.id }}</td>
+                                            <td scope="row">{{ index + 1 }}</td>
                                             <td>{{ trans.name }}</td>
                                             <td>{{ trans.quantity }}</td>
-                                            <td>{{ trans.price_net }}zł</td>
-                                            <td>{{ trans.vat }}zł</td>
-                                            <td>{{ trans.value_gross }}zł</td>
+                                            <td>{{ trans.price_net.toFixed(2) }}</td>
+                                            <td>{{ trans.vat }}</td>
+                                            <td>{{ (trans.price_net * trans.vat / 100).toFixed(2) }}</td>
+                                            <td>{{ trans.value_gross.toFixed(2) }}</td>
                                         </tr>
                                     </template>
                                 </tbody>
@@ -71,15 +73,15 @@
                             <table class="summary_table">
                                 <tr>
                                     <td><b>{{$t('value_net')}}</b></td>
-                                    <td class="summary_number">{{ invoice.sum_net / 100 }}zł</td>
+                                    <td class="summary_number">{{ (invoice.sum_net / 100).toFixed(2) }}zł</td>
                                 </tr>
                                 <tr>
                                     <td><b>{{$t('vat')}}</b></td>
-                                    <td class="summary_number">{{ invoice.sum_vat / 100 }}zł</td>
+                                    <td class="summary_number">{{ (invoice.sum_vat / 100).toFixed(2) }}zł</td>
                                 </tr>
                                 <tr>
                                     <td><b>{{$t('value_gross')}}</b></td>
-                                    <td class="summary_number">{{ invoice.sum_gross / 100 }}zł</td>
+                                    <td class="summary_number">{{ (invoice.sum_gross / 100).toFixed(2) }}zł</td>
                                 </tr>
                             </table>
                         </div>
