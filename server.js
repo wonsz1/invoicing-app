@@ -215,6 +215,23 @@ app.get('/invoice/user/:user_id', (req, res) => {
     });
 });
 
+
+app.delete('/invoice/user/:seller_id/:invoice_id', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `DELETE FROM invoices WHERE seller_id = (?) and id = (?)`;
+
+    db.run(sql, [req.params.seller_id, req.params.invoice_id], function(err) {
+        if (err) {
+            throw err;
+        }
+        
+        return res.json({
+            status: true,
+            message: "Invoice deleted"
+        });
+    });
+});
+
 app.get('/invoice/transactions/:invoice_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
     let sql = `SELECT * FROM transactions where transactions.invoice_id = (?)`;

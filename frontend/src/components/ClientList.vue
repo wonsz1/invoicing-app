@@ -81,7 +81,6 @@
           saveClient() {
             axios.defaults.headers.common['Authorization'] = store.getters.token;
             axios.post(env.default.SERVER_ADDR + 'client', this.client).then(res => {
-                console.log(res.data.message);
                 this.client.id = res.data.client_id
                 this.clients.push(this.client);
 
@@ -100,7 +99,6 @@
           deleteClient(id) {
             axios.defaults.headers.common['Authorization'] = store.getters.token;
             axios.delete(env.default.SERVER_ADDR + `client/${id}`).then(res => {
-                console.log(res.data.message);
                 this.clients = this.clients.filter(obj => {
                     return obj.id !== id;
                 });

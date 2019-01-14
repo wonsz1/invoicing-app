@@ -6,6 +6,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <h3>{{$t('invoices')}}</h3>
+
+                    <div v-if="status" class="alert alert-primary" role="alert">
+                        {{ status }}
+                    </div>
                     <table class="table">
                         <thead>
                             <tr>
@@ -32,7 +36,10 @@
                                     <td>{{ new Date(inv.issue_date).toISOString().split("T")[0] }}</td>
                                     <td v-if="inv.paid == 0">{{$t('unpaid')}}</td>
                                     <td v-else>{{$t('paid')}}</td>
-                                    <td><a href="#" class="btn btn-success" v-on:click="viewInvoice(inv.id)">{{$t('show')}}</a></td>
+                                    <td>
+                                        <a href="#" class="btn btn-success" v-on:click="viewInvoice(inv.id)">{{$t('show')}}</a>
+                                        <a href="#" class="btn btn-danger" v-on:click="deleteInvoice(inv.id)">{{$t('delete')}}</a>
+                                    </td>
                                 </tr>
                             </template>
                         </tbody>
@@ -58,13 +65,23 @@
       data() {
         return {
           invoices: [],
-          user: store.getters.user
+          user: store.getters.user,
+          status: ""
         };
       },
       methods: {
           viewInvoice(id) {
             console.log(id);
             this.$router.push({ name: 'Invoice', params: { id: id }});
+          },
+          deleteInvoice(id) {
+            axios.defaults.headers.common['Authorization'] = store.getters.token;
+            axios.delete(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.id}/${id}`).then(res => {
+                this.status = res.data.message;
+                this.invoices = this.invoices.filter(obj => {
+                    return obj.id !== id;
+                });
+            });
           }
       },
       mounted() {
@@ -72,7 +89,6 @@
         axios.get(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.id}`).then(res => {
           this.invoices = res.data.invoices;
         }).catch(err => {
-            console.log(err);
             if(err.response.status == 401) {
                 this.$router.push({ name: 'SignUp' })
             }

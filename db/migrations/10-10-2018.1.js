@@ -45,7 +45,7 @@ module.exports = {
                 sum_vat TEXT,
                 sum_gross INTEGER,
                 paid NUMERIC,
-                FOREIGN KEY(buyer_id) REFERENCES users(id)
+                FOREIGN KEY(buyer_id) REFERENCES clients(id)
                 FOREIGN KEY(seller_id) REFERENCES users(id)
                )`);
 
