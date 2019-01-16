@@ -38,6 +38,10 @@
         "edit": "Edit",
         "delete": "Delete",
         "company_name": "Company name",
-        "select": "Select"
+        "select": "Select",
+        "print": "Print",
+        "value_vat": "Value VAT",
+        "to_pay": "To pay",
+        "in_words": "In words"
     }
 }

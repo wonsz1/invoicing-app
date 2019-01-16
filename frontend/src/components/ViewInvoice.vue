@@ -4,9 +4,10 @@
     <div class="container">
         <div class="tab-pane fade show active">
             <div class="row">
-                <div class="col-md-12">
-                    <h3></h3>
-                    <div class="invoice-preview inv col-md-12">
+                <button class="btn btn-primary" v-on:click="print()">{{$t('print')}}</button>
+
+                <div class="col-md-12">                        
+                    <div id="printIt" class="invoice-preview inv col-md-12">
                         <div class="inv-header">
                             <p><b>{{$t('invoice_name')}}</b> {{ invoice.name }}</p>
                             <br/>
@@ -73,16 +74,32 @@
                             <table class="summary_table">
                                 <tr>
                                     <td><b>{{$t('value_net')}}</b></td>
-                                    <td class="summary_number">{{ (invoice.sum_net / 100).toFixed(2) }}zł</td>
+                                    <td class="summary_number">{{ (invoice.sum_net / 100).toFixed(2) }} PLN</td>
                                 </tr>
                                 <tr>
                                     <td><b>{{$t('vat')}}</b></td>
-                                    <td class="summary_number">{{ (invoice.sum_vat / 100).toFixed(2) }}zł</td>
+                                    <td class="summary_number">{{ (invoice.sum_vat / 100).toFixed(2) }} PLN</td>
                                 </tr>
                                 <tr>
                                     <td><b>{{$t('value_gross')}}</b></td>
-                                    <td class="summary_number">{{ (invoice.sum_gross / 100).toFixed(2) }}zł</td>
+                                    <td class="summary_number">{{ (invoice.sum_gross / 100).toFixed(2) }} PLN</td>
                                 </tr>
+                            </table>
+
+                            <hr>
+                            <table id="to_pay">
+                                <tbody>
+                                    <tr>
+                                        <th>{{$t('to_pay')}}</th>
+                                        <td>
+                                            {{ sum }} PLN 
+                                                <br> 
+                                                {{$t('in_words')}}: 
+                                                
+                                                {{ sumInWords}}
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -97,7 +114,25 @@
     import axios from 'axios';
     import store from '../services/store';
     import Header from './Header';
+    import Vue from 'vue'
+    import VueHtmlToPaper from 'vue-html-to-paper';
+    import { currentLocale } from '../services/i18n';
+    const PriceToPolishWords = require('price-to-polish-words');
+    
     const env = require('../config');
+    const options = {
+        name: '_blank',
+        specs: [
+            'fullscreen=no',
+            'titlebar=no',
+            'scrollbars=no'
+        ],
+        styles: [
+            '/static/css/invoice.css'
+        ]
+    }
+
+Vue.use(VueHtmlToPaper, options);
 
     export default {
       name: 'ViewInvoice',
@@ -109,7 +144,9 @@
           invoice: [],
           transactions: [],
           buyer: [],
-          user: store.getters.user
+          user: store.getters.user,
+          sum: "",
+          sumInWords: ""
         };
       },
       methods: {
@@ -118,6 +155,9 @@
           },
           getInvoiceTransactions() {
             return  axios.get(env.default.SERVER_ADDR + `invoice/transactions/${this.$route.params.id}`)
+          },
+          print() {
+              this.$htmlToPaper('printIt');
           }
       },
       mounted() {
@@ -127,6 +167,12 @@
           self.buyer = inv.data.buyer;
           self.invoice = inv.data.invoice;
           self.transactions = trans.data.transactions;
+          self.sum = (inv.data.invoice.sum_gross / 100).toFixed(2);
+          if(currentLocale() == 'pl') {
+            self.sumInWords = (new PriceToPolishWords(self.sum)).getPrice('zl-words zl gr-words gr');
+          } else {
+              self.sumInWords = "[TODO] price in englih"
+          }
         })).catch(err => {
             console.log(err);
             if(err.response.status == 401) {
@@ -181,5 +227,32 @@
     }
     .summary_table {
         width: 100%;
+    }
+    .row {
+        position: relative;
+    }
+    .btn {
+        position: absolute;
+        top: 30px;
+        right: 50px;
+        z-index: 10;
+    }
+    #printIt {
+        margin-top: 30px;
+    }
+    #to_pay {
+        text-align: left;
+    }
+    #to_pay th {
+        background-color: #fff;
+        border: none;
+        width: 120px;
+    }
+    .to_pay td, .to_pay th {
+        padding: 10px 5px;
+        vertical-align: top;
+    }
+    table tr {
+        vertical-align: top;
     }
 </style>

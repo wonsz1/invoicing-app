@@ -38,6 +38,10 @@
         "edit": "Edytuj",
         "delete": "Usun",
         "company_name": "Nazwa firmy",
-        "select": "Wybierz"
+        "select": "Wybierz",
+        "print": "Drukuj",
+        "value_vat": "Wartość VAT",
+        "to_pay": "Do zapłaty",
+        "in_words": "Słownie"
     }
 }
