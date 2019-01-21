@@ -6,7 +6,8 @@ import ViewInvoice from '@/components/ViewInvoice'
 import ClientList from '@/components/ClientList'
 import InvoiceList from '@/components/InvoiceList'
 import CreateInvoice from '@/components/CreateInvoice'
-import NotFound from '@/components/NotFound'
+import EditUser from '@/components/EditUser'
+//import NotFound from '@/components/NotFound'
 import { defaultLocale } from '../config/i18n'
 import store from '../services/store';
 Vue.use(Router)
@@ -54,14 +55,19 @@ let router = new Router({
                     path: 'client',
                     name: "Clients",
                     component: ClientList
+                },
+                {
+                    path: 'user',
+                    name: "EditUser",
+                    component: EditUser
                 }
             ]
         },
-        {
-            path: '*',
-            name: 'NotFound',
-            component: NotFound
-        }
+        // {
+        //     path: '*',
+        //     name: 'NotFound',
+        //     component: NotFound
+        // }
     ]
 })
 

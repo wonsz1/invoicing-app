@@ -38,8 +38,10 @@ export default {
         <span style="font-size:30px; cursor:pointer" v-on:click="openNav">&#9776;</span>
         <div id="leftsidenav" class="sidenav">
             <p style="cursor:pointer" v-on:click="closeNav">Close Nav</p>
-            <p v-if="isLoggedIn">{{$t('company')}}: {{ user.company_name }}</p>
-            <p v-if="isLoggedIn">{{ user.email }}</p>
+            <p v-if="isLoggedIn" id="company-name">
+                <router-link :to="{ name: 'EditUser' }">{{ user.company_name }}</router-link>
+                </p>
+            <p v-if="isLoggedIn">{{ user.name }}</p>
             <router-link :to="{ name: 'CreateInvoice' }">{{$t('create_inv')}}</router-link>
             <router-link :to="{ name: 'Invoices' }">{{$t('list_inv')}}</router-link>
             <router-link :to="{ name: 'Clients' }">{{$t('client_list')}}</router-link>
@@ -80,7 +82,7 @@ export default {
   margin-bottom: 1rem;
 }
 .sidenav a:hover {
-  color: #f1f1f1;
+  font-weight: bold;
 }
 .sidenav .closebtn {
   position: absolute;
@@ -88,6 +90,9 @@ export default {
   right: 25px;
   font-size: 36px;
   margin-left: 50px;
+}
+#company-name a {
+    color: #2f4ade;;
 }
 @media screen and (max-height: 450px) {
   .sidenav {

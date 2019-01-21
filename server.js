@@ -130,6 +130,68 @@ app.use((req, res, next) => {
     }
 });
 
+app.get('/user/:user_id', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = 'select * from users where id = (?)';
+
+    db.get(sql, [req.params.user_id], (err, user) => {
+        if(err) {
+            throw err;
+        }
+
+        return res.json({
+            status: true,
+            user: user
+        });
+    });
+});
+
+app.post('/user', validate(clientValidate), (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = `UPDATE users SET company_name = ?, email = ?, nip = ?, account_number = ?, address = ? WHERE id = ?`;
+
+    db.serialize( () => {
+        db.run(sql, [
+            req.body.company_name,
+            req.body.email,
+            req.body.nip,
+            req.body.account_number.replace(/\s/g, ''),
+            req.body.address,
+            req.body.user_id
+        ], function(err) {
+            if(err) {
+                throw err;
+            }
+
+            return res.json({
+                status: true,
+                message: 'Updated your account settings'
+            })
+        })
+    });
+});
+
+app.post('/password', (req, res) => {
+    let db = sqlite3.Database(process.env.DB_FILE);
+    let sql = `UPDATE users SET password = ? where id = ?`;
+
+    db.serialize(() => {
+        db.run(sql, [
+            req.body.password,
+            req.body.user_id
+        ], function(err) {
+            if(err)  {
+                throw err;
+            }
+
+            return res.json({
+                status: true,
+                message: 'Password changed'
+            })
+        })
+    });
+});
+
 app.post('/invoice', validate(invoiceValidate), (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
     let sql = `INSERT INTO invoices(name, buyer_id, seller_id, type, sell_date, issue_date, sum_net, sum_vat, sum_gross, paid) 
