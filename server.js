@@ -148,27 +148,43 @@ app.get('/user/:user_id', (req, res) => {
 
 app.post('/user', validate(clientValidate), (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `UPDATE users SET company_name = ?, email = ?, nip = ?, account_number = ?, address = ? WHERE id = ?`;
+    let sql = 'select * from banks where number = (?)';
+    let bankNumber = req.body.account_number.substring(2, 6);
 
-    db.serialize( () => {
-        db.run(sql, [
-            req.body.company_name,
-            req.body.email,
-            req.body.nip,
-            req.body.account_number.replace(/\s/g, ''),
-            req.body.address,
-            req.body.user_id
-        ], function(err) {
-            if(err) {
-                throw err;
-            }
+    db.get(sql, [bankNumber], (err, bank) => {
+        if(err) {
+            throw err;
+        }
 
-            return res.json({
-                status: true,
-                message: 'Updated your account settings'
+        let bankId = null;
+        if(typeof bank.number !== 'undefined') {
+            bankId = bank.id;
+        }
+        let db = new sqlite3.Database(process.env.DB_FILE);
+        let sql = `UPDATE users SET company_name = ?, email = ?, nip = ?, account_number = ?, bank_id = ?, address = ? WHERE id = ?`;
+
+        db.serialize( () => {
+            db.run(sql, [
+                req.body.company_name,
+                req.body.email,
+                req.body.nip,
+                req.body.account_number.replace(/\s/g, ''),
+                bankId,
+                req.body.address,
+                req.body.user_id
+            ], function(err) {
+                if(err) {
+                    throw err;
+                }
+
+                return res.json({
+                    status: true,
+                    message: 'Updated your account settings'
+                })
             })
-        })
+        });
     });
+    
 });
 
 app.post('/password', (req, res) => {
@@ -366,6 +382,22 @@ app.delete('/client/:client_id', (req, res) => {
         return res.json({
             status: true,
             message: "Client deleted" + req.params.client_id
+        });
+    });
+});
+
+app.get('/bank/:bank_id', (req, res) => {
+    let db = new sqlite3.Database(process.env.DB_FILE);
+    let sql = 'select * from banks where id = (?)';
+
+    db.get(sql, [req.params.bank_id], (err, bank) => {
+        if(err) {
+            throw err;
+        }
+
+        return res.json({
+            status: true,
+            bank: bank
         });
     });
 });

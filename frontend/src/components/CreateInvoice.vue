@@ -42,6 +42,7 @@
                                 <p>{{ seller.company_name }}</p>
                                 <p>NIP {{ seller.nip }}</p>
                                 <p>{{ seller.address }}</p>
+                                <p>{{ sellerBank.name }}</p>
                                 <p>{{ seller.account_number }}</p>
                             </div>
                             <div class="col-md-6">
@@ -198,6 +199,7 @@ export default {
             client: {},
             clientSelected: {},
             seller: store.getters.user,
+            sellerBank: "",
             nextTxnId: 1,
             loading: "",
             status: "",
@@ -208,6 +210,14 @@ export default {
         axios.defaults.headers.common['Authorization'] = store.getters.token;
         axios.get(env.default.SERVER_ADDR + `client/user/${store.getters.user.id}`).then(res => {
           this.clients = res.data.clients;
+        }).catch(err => {
+            console.log(err);
+            if(err.response.status == 401) {
+                this.$router.push({ name: 'SignUp' })
+            }
+        })
+        axios.get(env.default.SERVER_ADDR + `bank/${store.getters.user.bank_id}`).then(res => {
+          this.sellerBank = res.data.bank;
         }).catch(err => {
             console.log(err);
             if(err.response.status == 401) {

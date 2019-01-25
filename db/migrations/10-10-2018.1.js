@@ -19,6 +19,7 @@ module.exports = {
                 nip TEXT,
                 address TEXT,
                 account_number TEXT,
+                bank_id INTEGER,
                 password TEXT
                )`);
 
@@ -61,6 +62,11 @@ module.exports = {
                 FOREIGN KEY(invoice_id) REFERENCES invoices(id)
                )`);
 
+        db.run(`CREATE TABLE banks(
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                number INTEGER
+               )`);
         db.close();
       });
     });

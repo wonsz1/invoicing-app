@@ -37,6 +37,10 @@
                                         <td id="buyer">NIP {{ buyer.nip }}</td>
                                     </tr>
                                     <tr>
+                                        <td>{{ sellerBank.name }}</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
                                         <td>{{ user.account_number }}</td>
                                         <td></td>
                                     </tr>
@@ -146,7 +150,8 @@ Vue.use(VueHtmlToPaper, options);
           buyer: [],
           user: store.getters.user,
           sum: "",
-          sumInWords: ""
+          sumInWords: "",
+          sellerBank: ""
         };
       },
       methods: {
@@ -156,6 +161,9 @@ Vue.use(VueHtmlToPaper, options);
           getInvoiceTransactions() {
             return  axios.get(env.default.SERVER_ADDR + `invoice/transactions/${this.$route.params.id}`)
           },
+          getSellerBank() {
+            return  axios.get(env.default.SERVER_ADDR + `bank/${store.getters.user.bank_id}`)
+          },
           print() {
               this.$htmlToPaper('printIt');
           }
@@ -163,10 +171,11 @@ Vue.use(VueHtmlToPaper, options);
       mounted() {
         var self = this;
         axios.defaults.headers.common['Authorization'] = store.getters.token;
-        axios.all([this.getInvoice(), this.getInvoiceTransactions()]).then(axios.spread(function(inv, trans) {
+        axios.all([this.getInvoice(), this.getInvoiceTransactions(), this.getSellerBank()]).then(axios.spread(function(inv, trans, bank) {
           self.buyer = inv.data.buyer;
           self.invoice = inv.data.invoice;
           self.transactions = trans.data.transactions;
+          self.sellerBank = bank.data.bank;
           self.sum = (inv.data.invoice.sum_gross / 100).toFixed(2);
           if(currentLocale() == 'pl') {
             self.sumInWords = (new PriceToPolishWords(self.sum)).getPrice('zl-words zl gr-words gr');
