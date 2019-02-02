@@ -32,8 +32,8 @@
                                         <td>{{ client.address }}</td>
                                         <td>{{ client.nip }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-success" v-on:click="editClient(client.id)">{{$t('edit')}}</a>
-                                            <a href="#" class="btn btn-danger" v-on:click="deleteClient(client.id)">{{$t('delete')}}</a>
+                                            <a href="#" class="btn btn-success" v-on:click="editClient(client.uuid)">{{$t('edit')}}</a>
+                                            <a href="#" class="btn btn-danger" v-on:click="deleteClient(client.uuid)">{{$t('delete')}}</a>
                                         </td>
                                     </tr>
                                 </template>

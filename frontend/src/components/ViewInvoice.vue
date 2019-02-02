@@ -156,7 +156,7 @@ Vue.use(VueHtmlToPaper, options);
       },
       methods: {
           getInvoice() {
-            return  axios.get(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.id}/${this.$route.params.id}`)
+            return  axios.get(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.uuid}/${this.$route.params.id}`)
           },
           getInvoiceTransactions() {
             return  axios.get(env.default.SERVER_ADDR + `invoice/transactions/${this.$route.params.id}`)
@@ -191,7 +191,7 @@ Vue.use(VueHtmlToPaper, options);
       }
     }
 </script>
-<style>
+<style scoped>
     .invoice-preview {
         margin: 0 auto;
         box-shadow: 1px 3px 5px 0px rgba(0,0,0,0.75);

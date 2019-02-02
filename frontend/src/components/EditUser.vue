@@ -31,7 +31,7 @@ export default {
     mounted() {
         var self = this;
         axios.defaults.headers.common['Authorization'] = store.getters.token;
-        axios.get(env.default.SERVER_ADDR + `user/${store.getters.user.id}`).then(res => {
+        axios.get(env.default.SERVER_ADDR + `user/${store.getters.user.uuid}`).then(res => {
           this.user = res.data.user;
           this.user.user_id = store.getters.user.id;
         }).catch(err => {

@@ -3,7 +3,7 @@ const Umzug = require("umzug");
 
 let umzug = new Umzug({
   logging: () => {
-    console.log(arguments);
+    //console.log(arguments);
     //console.dir( arguments );
   },
   migrations: {

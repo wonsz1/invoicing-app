@@ -37,8 +37,8 @@
                                     <td v-if="inv.paid == 0">{{$t('unpaid')}}</td>
                                     <td v-else>{{$t('paid')}}</td>
                                     <td>
-                                        <a href="#" class="btn btn-success" v-on:click="viewInvoice(inv.id)">{{$t('show')}}</a>
-                                        <a href="#" class="btn btn-danger" v-on:click="deleteInvoice(inv.id)">{{$t('delete')}}</a>
+                                        <a href="#" class="btn btn-success" v-on:click="viewInvoice(inv.uuid)">{{$t('show')}}</a>
+                                        <a href="#" class="btn btn-danger" v-on:click="deleteInvoice(inv.uuid)">{{$t('delete')}}</a>
                                     </td>
                                 </tr>
                             </template>
@@ -76,7 +76,7 @@
           },
           deleteInvoice(id) {
             axios.defaults.headers.common['Authorization'] = store.getters.token;
-            axios.delete(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.id}/${id}`).then(res => {
+            axios.delete(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.uuid}/${id}`).then(res => {
                 this.status = res.data.message;
                 this.invoices = this.invoices.filter(obj => {
                     return obj.id !== id;
@@ -86,7 +86,7 @@
       },
       mounted() {
         axios.defaults.headers.common['Authorization'] = store.getters.token;
-        axios.get(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.id}`).then(res => {
+        axios.get(env.default.SERVER_ADDR + `invoice/user/${store.getters.user.uuid}`).then(res => {
           this.invoices = res.data.invoices;
         }).catch(err => {
             if(err.response.status == 401) {

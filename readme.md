@@ -13,12 +13,15 @@ or install nodemon and run
    
  
  ### Setup frontend
- run `npm install`
+ run `npm install`  
+
+ run migrations:  
+ `node db/scripts/migrate.js up`  
  
  serve with hot reload at localhost:8080  
  `npm run dev`  
  or  
  `nodemon`  
- test
- 
- test2
+   
+ db:  
+ `sqlite3 db/InvoicingApp.db`
