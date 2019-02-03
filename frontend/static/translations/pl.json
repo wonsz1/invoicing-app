@@ -42,6 +42,8 @@
         "print": "Drukuj",
         "value_vat": "Wartość VAT",
         "to_pay": "Do zapłaty",
-        "in_words": "Słownie"
+        "in_words": "Słownie",
+        "register": "Register",
+        "create_account": "Create account"
     }
 }

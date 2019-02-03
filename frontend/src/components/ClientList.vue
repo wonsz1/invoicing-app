@@ -67,7 +67,7 @@
                 nip: "",
                 email: "",
                 account_number: "",
-                user_id: store.getters.user.id
+                user_id: store.getters.user.uuid
             },
             clients: [],
             user: store.getters.user
@@ -92,7 +92,7 @@
                     nip: "",
                     email: "",
                     account_number: "",
-                    user_id: store.getters.user.id
+                    user_id: store.getters.user.uuid
                 }
             });
           },

@@ -34,9 +34,10 @@ app.get('/', (req, res) => {
 app.post('/register', validate(registerValidation), (req, res) => {
     bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
         let db = new sqlite3.Database(process.env.DB_FILE);
-        const sql = `INSERT INTO users(uuid, nip, email, company_name, password) VALUES(?,?,?,?,?)`;
+        const sql = `INSERT INTO users(uuid, nip, email, company_name, address, account_number, password) VALUES(?,?,?,?,?,?,?)`;
+        const accountNumber = req.body.account_number.replace(/\s/g, '');
 
-        db.run(sql, [uuidv4(), req.body.nip, req.body.email, req.body.company_name, hash], (err) => {
+        db.run(sql, [uuidv4(), req.body.nip, req.body.email, req.body.company_name, req.body.address, accountNumber, hash], (err) => {
             if(err) {
                 throw err;
             } else {
@@ -49,7 +50,7 @@ app.post('/register', validate(registerValidation), (req, res) => {
               };
 
               const token = jwt.sign(payload, app.get("appSecret"), {
-                expiresInMinutes: "24h"
+                expiresIn: "24h"
               });
 
               return res.json({
@@ -101,7 +102,7 @@ app.post('/login', (req, res) => {
        }
 
        return res.json({
-         status: true,
+         status: false,
          message: "Wrong password"
        });
     });
@@ -348,7 +349,7 @@ app.get('/client/user/:user_id', (req, res) => {
 app.post('/client', validate(clientValidate), (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
     let sql = `INSERT INTO clients(company_name, address, nip, email, account_number, user_id, uuid) 
-    VALUES(?, ?, ?, ?, ?, ?)`;
+    VALUES(?, ?, ?, ?, ?, ?, ?)`;
 
     db.serialize( () => {
         db.run(sql, [

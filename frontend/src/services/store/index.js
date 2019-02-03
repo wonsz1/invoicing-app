@@ -37,14 +37,21 @@ export default new Vuex.Store({
                 commit('auth_request');
                 axios({url: env.default.SERVER_ADDR + 'login', data: formData, method: 'POST'})
                 .then(res => {
-                    const token = res.data.token;
-                    const user = res.data.user;
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('user',  JSON.stringify(user));
-                    axios.defaults.headers.common['Authorization'] = token;
-                    commit('auth_success', { token, user });
+                    if(res.data.status == false) {
+                        commit('auth_error');
+                        localStorage.removeItem('token')
 
-                    resolve(res);
+                        reject(res.data.message);
+                    } else {
+                        const token = res.data.token;
+                        const user = res.data.user;
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('user',  JSON.stringify(user));
+                        axios.defaults.headers.common['Authorization'] = token;
+                        commit('auth_success', { token, user });
+
+                        resolve(res);
+                    }
                 }).catch(err => {
                     console.log(err);
                     commit('auth_error');
@@ -89,7 +96,7 @@ export default new Vuex.Store({
         isLoggedIn: state => !!state.token,
         authStatus: state => state.status,
         token: state => state.token,
-        user: state => JSON.parse(state.user),
-        //user: state => state.user,
+        //user: state => JSON.parse(state.user),
+        user: state => state.user,
     }
 })
