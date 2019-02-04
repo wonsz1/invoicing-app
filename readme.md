@@ -1,8 +1,3 @@
-Based on:
-https://scotch.io/tutorials/building-a-mini-invoicing-app-with-vue-and-node-database-and-api
-Localization based on: 
-https://phraseapp.com/blog/posts/how-to-build-spa-vue-js-i18n/
-
 ### Setup API
 run `npm install`  
 create .env file with `DB_FILE=./db/InvoicingApp.db`  
@@ -13,7 +8,8 @@ or install nodemon and run
    
  
  ### Setup frontend
- run `npm install`  
+ `cd frontend`  
+ `npm install`  
 
  run migrations:  
  `node db/scripts/migrate.js up`  
@@ -23,5 +19,28 @@ or install nodemon and run
  or  
  `nodemon`  
    
- db:  
+ ### DB  
  `sqlite3 db/InvoicingApp.db`
+
+ ### Screenshots  
+
+ Login screen
+ >![alt Login screen](imgs/login.png)
+   
+Register
+>![alt Register](imgs/register.png)
+  
+User Edit
+>![alt User edit](imgs/user-edit.png)  
+
+Clients
+>![alt Clients](imgs/clients.png)  
+
+Create invoice
+>![alt FV create](imgs/fv-create.png)  
+
+FV list
+>![alt FV list](imgs/fv-list.png)
+
+FV preview
+>![alt FV list](imgs/fv-preview.png)
