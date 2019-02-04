@@ -18,10 +18,8 @@ export default new Vuex.Store({
         },
         auth_success(state, { token, user }) {
             state.status = 'success';
-            console.log('user save');
-            console.log(user);
             state.token = token;
-            state.user = user;
+            state.user = JSON.stringify(user);
         },
         auth_error(state) {
             state.status = 'Error';
@@ -96,7 +94,6 @@ export default new Vuex.Store({
         isLoggedIn: state => !!state.token,
         authStatus: state => state.status,
         token: state => state.token,
-        //user: state => JSON.parse(state.user),
-        user: state => state.user,
+        user: state => JSON.parse(state.user),
     }
 })
