@@ -25,7 +25,8 @@ export default {
             axios.post(env.default.SERVER_ADDR + 'user', formData).then(res => {
                 this.loading = "";
                 this.status = res.data.message;
-            });
+                store.state.user = JSON.stringify(this.user);
+            })
         },
     },
     mounted() {
@@ -72,9 +73,9 @@ export default {
                         </div>
                         <div class="form-group">
                             <button class="btn btn-primary">Update</button>
-
-                            {{ loading }}
-                            {{ status }}
+                            <p>{{ loading }}</p>
+                            <p>{{ status }}</p>
+                            
                         </div>
                     </form>
                 </div>

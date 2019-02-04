@@ -27,7 +27,7 @@ module.exports = {
         db.run(`CREATE TABLE clients(
                 id INTEGER PRIMARY KEY,
                 uuid TEXT,
-                user_id TEXT,
+                user_id INTEGER,
                 company_name TEXT,
                 nip TEXT,
                 address TEXT,
@@ -40,7 +40,7 @@ module.exports = {
                 id INTEGER PRIMARY KEY,
                 uuid TEXT,
                 name TEXT,
-                buyer_id INTEGER,
+                buyer_id TEXT,
                 seller_id TEXT,
                 type INTEGER,
                 sell_date DATE,

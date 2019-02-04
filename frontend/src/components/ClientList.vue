@@ -75,8 +75,7 @@
       },
       methods: {
           editClient(id) {
-            console.log(id);
-            this.$router.push({ name: 'Client', params: { id: id }});
+            console.log('TODO edit client');
           },
           saveClient() {
             axios.defaults.headers.common['Authorization'] = store.getters.token;
@@ -100,14 +99,14 @@
             axios.defaults.headers.common['Authorization'] = store.getters.token;
             axios.delete(env.default.SERVER_ADDR + `client/${id}`).then(res => {
                 this.clients = this.clients.filter(obj => {
-                    return obj.id !== id;
+                    return obj.uuid !== id;
                 });
             });
           }
       },
       mounted() {
         axios.defaults.headers.common['Authorization'] = store.getters.token;
-        axios.get(env.default.SERVER_ADDR + `client/user/${store.getters.user.id}`).then(res => {
+        axios.get(env.default.SERVER_ADDR + `client/user/${store.getters.user.uuid}`).then(res => {
           this.clients = res.data.clients;
         }).catch(err => {
             console.log(err);

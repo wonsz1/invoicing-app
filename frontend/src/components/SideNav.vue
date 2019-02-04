@@ -19,11 +19,16 @@ export default {
             document.getElementById("rightsidenav").style.width = '0%';
         },
         logout() {
-            store.dispatch('logout');
+            store.dispatch('logout').then(() => {
+                this.$router.push({ name: 'SignUp' });
+            })
         },
         login() {
             store.dispatch('login');
         }
+    },
+    mounted() {
+        this.user = store.getters.user;
     },
     computed: {
         isLoggedIn() {
