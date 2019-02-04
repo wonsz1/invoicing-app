@@ -15,6 +15,7 @@ const uuidv4 = require('uuid/v4');
 let registerValidation = require('./validation/register.js');
 let invoiceValidate = require('./validation/invoice.js');
 let clientValidate = require('./validation/client.js');
+let userValidate = require('./validation/user.js');
 
 const app = express();
 
@@ -147,10 +148,11 @@ app.get('/user/:user_id', (req, res) => {
     });
 });
 
-app.post('/user', validate(clientValidate), (req, res) => {
+app.post('/user', validate(userValidate), (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
     let sql = 'select * from banks where number = (?)';
-    let bankNumber = req.body.account_number.substring(2, 6);
+    let accountNumber = req.body.account_number.replace(/\s/g, '');
+    let bankNumber = accountNumber.substring(2, 6);
 
     db.get(sql, [bankNumber], (err, bank) => {
         if(err) {
@@ -161,7 +163,6 @@ app.post('/user', validate(clientValidate), (req, res) => {
         if(typeof bank.number !== 'undefined') {
             bankId = bank.id;
         }
-        let db = new sqlite3.Database(process.env.DB_FILE);
         let sql = `UPDATE users SET company_name = ?, email = ?, nip = ?, account_number = ?, bank_id = ?, address = ? WHERE uuid = ?`;
 
         db.serialize( () => {
@@ -169,10 +170,10 @@ app.post('/user', validate(clientValidate), (req, res) => {
                 req.body.company_name,
                 req.body.email,
                 req.body.nip,
-                req.body.account_number.replace(/\s/g, ''),
+                req.body.account_number,
                 bankId,
                 req.body.address,
-                req.body.user_id
+                req.body.uuid
             ], function(err) {
                 if(err) {
                     throw err;
@@ -180,7 +181,7 @@ app.post('/user', validate(clientValidate), (req, res) => {
 
                 return res.json({
                     status: true,
-                    message: 'Updated your account settings'
+                    message: 'Updated your account settings',
                 })
             })
         });
@@ -219,7 +220,7 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
         db.run(sql, [
           invUuid,
           req.body.invoice.name,
-          req.body.buyer_id,
+          req.body.buyer.uuid,
           req.body.seller_id,
           req.body.invoice.type,
           req.body.invoice.sell_date,
@@ -259,7 +260,7 @@ app.post('/invoice', validate(invoiceValidate), (req, res) => {
 app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
     let invSql = `SELECT * FROM invoices where seller_id= (?) and invoices.uuid = (?)`;
-    let clientSql = `SELECT * FROM clients where id = (?)`;
+    let clientSql = `SELECT * FROM clients where uuid = (?)`;
 
     db.get(invSql, [req.params.user_id, req.params.invoice_id], (err, invoice) => {
         if(err) {
@@ -282,7 +283,7 @@ app.get('/invoice/user/:user_id/:invoice_id', (req, res) => {
 
 app.get('/invoice/user/:user_id', (req, res) => {
     let db = new sqlite3.Database(process.env.DB_FILE);
-    let sql = `SELECT invoices.*, clients.company_name as client FROM invoices join clients on invoices.buyer_id = clients.id where seller_id= (?)`;
+    let sql = `SELECT invoices.*, clients.company_name as client FROM invoices join clients on invoices.buyer_id = clients.uuid where seller_id = (?)`;
 
     db.all(sql, [req.params.user_id], (err, rows) => {
         if(err) {
